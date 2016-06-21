@@ -14,7 +14,7 @@ var createSwaggerPage = (options) => {
         throw new Error('options.path is required');
     }
 
-    var swaggerUiPath = path.resolve(__dirname, 'node_modules', 'swagger-ui', 'dist');
+    var swaggerUiPath = path.dirname(require.resolve('swagger-ui'));
 
     var swaggerSpec = swaggerJSDoc({
         swaggerDefinition: {
@@ -27,7 +27,6 @@ var createSwaggerPage = (options) => {
     });
 
     var publicPath = options.path.replace(/\/+$/, '');
-    console.log(swaggerUiPath);
 
     options.server.get(`${publicPath}/swagger.json`, (req, res, next) => {
         res.setHeader('Content-type', 'application/json');
