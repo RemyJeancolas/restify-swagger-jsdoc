@@ -2,6 +2,7 @@ var restify = require('restify');
 var swaggerJSDoc = require('swagger-jsdoc');
 var path = require('path');
 var fs = require('fs');
+var mime = require('mime-types');
 
 var createSwaggerPage = (options) => {
     if (!options.server) {
@@ -49,6 +50,11 @@ var createSwaggerPage = (options) => {
             if (req.params[0] === 'index.html') {
                 var swaggerJsonFileUrl = `${req.isSecure() ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
                 content = content.toString().replace('url = "http://petstore.swagger.io/v2/swagger.json"', `url ="${swaggerJsonFileUrl}"`);
+            }
+
+            var contentType = mime.lookup(req.params[0]);
+            if (contentType !== false) {
+                res.setHeader('Content-Type', contentType);
             }
 
             res.write(content);
