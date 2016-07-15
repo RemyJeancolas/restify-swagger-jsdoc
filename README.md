@@ -18,7 +18,8 @@ restifySwaggerJsdoc.createSwaggerPage({
     version: '1.0.0', // Server version (required)
     server: server, // Restify server instance created with restify.createServer()
     path: '/docs/swagger', // Public url where the swagger page will be available
-    apis: [ `${__dirname}/controllers/*.js` ] // Path to the API docs
+    apis: [ `${__dirname}/controllers/*.js` ], // Path to the API docs
+    routePrefix: 'prefix' // prefix to add for all routes (optional)
 });
 ```
 With these settings, assuming that your server listens on port 80, the Swagger documentation page will be available at [http://localhost/docs/swagger](http://localhost/docs/swagger).

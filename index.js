@@ -27,6 +27,14 @@ var createSwaggerPage = (options) => {
         apis: options.apis || []
     });
 
+    // Prepend route prefix if needed
+    if (options.routePrefix && swaggerSpec.hasOwnProperty('paths')) {
+        for (var prop in swaggerSpec.paths) {
+            swaggerSpec.paths['/' + options.routePrefix + prop] = swaggerSpec.paths[prop];
+            delete(swaggerSpec.paths[prop]);
+        }
+    }
+
     var publicPath = options.path.replace(/\/+$/, '');
 
     options.server.get(`${publicPath}/swagger.json`, (req, res, next) => {
