@@ -7,5 +7,6 @@ export interface SwaggerPageOptions {
     path: string;
     apis: string[];
     routePrefix?: string;
+    forceSecure?: boolean;
 }
 export function createSwaggerPage(options: SwaggerPageOptions): void;

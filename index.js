@@ -56,7 +56,7 @@ var createSwaggerPage = (options) => {
             }
 
             if (req.params[0] === 'index.html') {
-                var swaggerJsonFileUrl = `${req.isSecure() ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
+                var swaggerJsonFileUrl = `${options.forceSecure || req.isSecure() ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
                 content = content.toString().replace('url = "http://petstore.swagger.io/v2/swagger.json"', `url ="${swaggerJsonFileUrl}"`);
             }
 
