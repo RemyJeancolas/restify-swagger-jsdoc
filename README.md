@@ -19,6 +19,7 @@ restifySwaggerJsdoc.createSwaggerPage({
     server: server, // Restify server instance created with restify.createServer()
     path: '/docs/swagger', // Public url where the swagger page will be available
     apis: [ `${__dirname}/controllers/*.js` ], // Path to the API docs
+    definitions: {myObject: require('api/myObject.json')}, // External definitions to add to swagger (optional)
     routePrefix: 'prefix', // prefix to add for all routes (optional)
     forceSecure: false // force swagger-ui to use https protocol to load JSON file (optional, default: false)
 });

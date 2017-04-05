@@ -26,6 +26,12 @@ var createSwaggerPage = (options) => {
         },
         apis: options.apis || []
     });
+    if(options.definitions) {
+        //Add any external definitions provided
+        for (var externalDefinition in options.definitions) {
+            swaggerSpec.definitions[externalDefinition] = options.definitions[externalDefinition];
+        }
+    }
 
     // Prepend route prefix if needed
     if (options.routePrefix && swaggerSpec.hasOwnProperty('paths')) {
