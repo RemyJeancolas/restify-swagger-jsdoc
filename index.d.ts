@@ -6,6 +6,7 @@ export interface SwaggerPageOptions {
     server: Server;
     path: string;
     apis: string[];
+    definitions?: {[key: string]: any};
     routePrefix?: string;
     forceSecure?: boolean;
 }
