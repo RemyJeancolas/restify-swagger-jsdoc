@@ -2,7 +2,7 @@
   "name": "restify-swagger-jsdoc",
   "version": "1.0.8",
   "description": "Create Swagger documentation page based on jsdoc",
-  "main": "index.js",
+  "main": "js/index.js",
   "scripts": {
     "build": "rm -rf js && tsc",
     "lint": "tslint -c tslint.json ./src/*.ts ./tests/*.ts --format verbose",
