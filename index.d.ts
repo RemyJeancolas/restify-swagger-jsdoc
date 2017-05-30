@@ -5,9 +5,10 @@ export interface SwaggerPageOptions {
     version: string;
     server: Server;
     path: string;
-    apis: string[];
+    apis?: string[];
     definitions?: {[key: string]: any};
     routePrefix?: string;
     forceSecure?: boolean;
 }
+
 export function createSwaggerPage(options: SwaggerPageOptions): void;

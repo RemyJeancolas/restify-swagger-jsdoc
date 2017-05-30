@@ -1,13 +1,15 @@
 # restify-swagger-jsdoc
 Create Swagger documentation page based on jsdoc
 
+[![Build Status](https://travis-ci.org/RemyJeancolas/restify-swagger-jsdoc.svg?branch=master)](https://travis-ci.org/RemyJeancolas/restify-swagger-jsdoc)
+[![Coverage Status](https://coveralls.io/repos/github/RemyJeancolas/restify-swagger-jsdoc/badge.svg?branch=master)](https://coveralls.io/github/RemyJeancolas/restify-swagger-jsdoc?branch=master)
 [![npm Version](https://img.shields.io/npm/v/restify-swagger-jsdoc.svg)](https://www.npmjs.com/package/restify-swagger-jsdoc)
 [![npm Downloads](https://img.shields.io/npm/dm/restify-swagger-jsdoc.svg)](https://www.npmjs.com/package/restify-swagger-jsdoc)
 [![Dependency Status](https://gemnasium.com/badges/github.com/RemyJeancolas/restify-swagger-jsdoc.svg)](https://gemnasium.com/github.com/RemyJeancolas/restify-swagger-jsdoc)
 
 ## Installation
 ```bash
-npm install restify-swagger-jsdoc
+npm install restify-swagger-jsdoc --production
 ```
 ## Initialization
 To initialize the swagger JSDoc page, simply add this lines to the file that loads your restify server :
