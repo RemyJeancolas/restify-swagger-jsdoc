@@ -46,7 +46,7 @@ function createSwaggerPage(options) {
         return next();
     });
     options.server.get(new RegExp(publicPath + '\/?$'), (req, res, next) => {
-        res.header('Location', `${publicPath}/index.html`);
+        res.setHeader('Location', `${publicPath}/index.html`);
         res.send(302);
         return next();
     });
@@ -70,5 +70,5 @@ function createSwaggerPage(options) {
         });
     });
 }
-exports.default = createSwaggerPage;
+exports.createSwaggerPage = createSwaggerPage;
 //# sourceMappingURL=index.js.map
