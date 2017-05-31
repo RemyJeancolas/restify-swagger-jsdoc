@@ -5,6 +5,15 @@ const swaggerJSDoc = require("swagger-jsdoc");
 const path = require("path");
 const fs = require("fs");
 const mime = require("mime-types");
+const internalFiles = [
+    'index.html',
+    'favicon-16x16.png',
+    'favicon-32x32.png',
+    'swagger-ui-bundle.js',
+    'swagger-ui-bundle.js.map',
+    'swagger-ui-standalone-preset.js',
+    'swagger-ui-standalone-preset.js.map'
+];
 function createSwaggerPage(options) {
     if (!options.title) {
         throw new Error('options.title is required');
@@ -51,14 +60,19 @@ function createSwaggerPage(options) {
         return next();
     });
     options.server.get(new RegExp(publicPath + '\/(.*)$'), (req, res, next) => {
-        fs.readFile(path.resolve(swaggerUiPath, req.params[0]), (err, content) => {
+        const filePath = internalFiles.indexOf(req.params[0]) >= 0
+            ? path.resolve(__dirname, '..', 'dist', req.params[0])
+            : path.resolve(swaggerUiPath, req.params[0]);
+        fs.readFile(filePath, (err, content) => {
             if (err) {
                 return next(new restify.NotFoundError(`File ${req.params[0]} does not exist`));
             }
             if (req.params[0] === 'index.html') {
                 const isReqSecure = options.forceSecure || req.isSecure();
                 const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
-                content = new Buffer(content.toString().replace('url = "http://petstore.swagger.io/v2/swagger.json"', `url ="${jsonFileUrl}"`));
+                content = new Buffer(content.toString()
+                    .replace('<title>Swagger UI</title>', `<title>${options.title}</title>`)
+                    .replace('url: "http://petstore.swagger.io/v2/swagger.json"', `url: "${jsonFileUrl}"`));
             }
             const contentType = mime.lookup(req.params[0]);
             if (contentType !== false) {
