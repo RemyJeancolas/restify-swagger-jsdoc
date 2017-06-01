@@ -93,3 +93,5 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
         });
     });
 }
+
+export default {createSwaggerPage}; // tslint:disable-line:no-default-export

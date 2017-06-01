@@ -71,4 +71,5 @@ function createSwaggerPage(options) {
     });
 }
 exports.createSwaggerPage = createSwaggerPage;
+exports.default = { createSwaggerPage };
 //# sourceMappingURL=index.js.map
