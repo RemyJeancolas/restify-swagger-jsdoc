@@ -27,10 +27,11 @@
   },
   "homepage": "https://github.com/RemyJeancolas/restify-swagger-jsdoc#readme",
   "dependencies": {
+    "@types/restify": "^5.0.6",
+    "@types/restify-errors": "^4.3.2",
     "mime-types": "^2.1.15",
-    "restify": "^4.3.0",
-    "swagger-jsdoc": "^1.9.4",
-    "swagger-ui": "^3.0.12"
+    "restify": "^6.0.1",
+    "restify-errors": "^5.0.0",
     "swagger-jsdoc": "^1.9.7",
     "swagger-ui": "^3.4.1"
   },
@@ -39,7 +40,6 @@
     "@types/mime-types": "^2.1.0",
     "@types/mocha": "^2.2.41",
     "@types/node": "^7.0.22",
-    "@types/restify": "^4.3.2",
     "@types/sinon": "^2.2.2",
     "chai": "^4.0.0",
     "coveralls": "^2.13.1",
