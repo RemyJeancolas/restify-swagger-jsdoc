@@ -31,6 +31,8 @@
     "restify": "^4.3.0",
     "swagger-jsdoc": "^1.9.4",
     "swagger-ui": "^3.0.12"
+    "swagger-jsdoc": "^1.9.7",
+    "swagger-ui": "^3.4.1"
   },
   "devDependencies": {
     "@types/chai": "^3.5.2",
