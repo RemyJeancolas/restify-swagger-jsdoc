@@ -38,6 +38,14 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
         apis: options.apis || []
     });
 
+    if (options.host) {
+        swaggerSpec.host = options.host;
+    }
+
+    if (options.schemes) {
+        swaggerSpec.schemes = options.schemes;
+    }
+
     if (options.definitions) {
         // Add any external definitions provided
         Object.keys(options.definitions).forEach(key => {
