@@ -8,25 +8,39 @@ Create Swagger documentation page based on jsdoc
 [![Dependency Status](https://gemnasium.com/badges/github.com/RemyJeancolas/restify-swagger-jsdoc.svg)](https://gemnasium.com/github.com/RemyJeancolas/restify-swagger-jsdoc)
 
 ## Installation
+
 ```bash
 npm install restify-swagger-jsdoc --production
 ```
+
 ## Initialization
+
 To initialize the swagger JSDoc page, simply add this lines to the file that loads your restify server :
+
 ```javascript
 var restifySwaggerJsdoc = require('restify-swagger-jsdoc');
 restifySwaggerJsdoc.createSwaggerPage({
     title: 'API documentation', // Page title (required)
     version: '1.0.0', // Server version (required)
-    server: server, // Restify server instance created with restify.createServer()
-    path: '/docs/swagger', // Public url where the swagger page will be available
-    apis: [ `${__dirname}/controllers/*.js` ], // Path to the API docs
-    definitions: {myObject: require('api/myObject.json')}, // External definitions to add to swagger (optional)
-    routePrefix: 'prefix', // prefix to add for all routes (optional)
-    forceSecure: false // force swagger-ui to use https protocol to load JSON file (optional, default: false)
+    server: server, // Restify server instance created with restify.createServer() (required)
+    path: '/docs/swagger', // Public url where the swagger page will be available (required)
+    description: 'My great app', // A short description of the application. (default: '')
+    tags: [{ // A list of tags used by the specification with additional metadata (default: [])
+        name: 'Tag name',
+        description: 'Tag description'
+    }],
+    host: 'google.com', // The host (name or ip) serving the API. This MUST be the host only and does not include the scheme nor sub-paths.
+    schemes: [], // The transfer protocol of the API. Values MUST be from the list: "http", "https", "ws", "wss". (default: [])
+    apis: [ `${__dirname}/controllers/*.js` ], // Path to the API docs (default: [])
+    definitions: {myObject: require('api/myObject.json')}, // External definitions to add to swagger (default: [])
+    routePrefix: 'prefix', // prefix to add for all routes (default: '')
+    forceSecure: false // force swagger-ui to use https protocol to load JSON file (default: false)
 });
 ```
-With these settings, assuming that your server listens on port 80, the Swagger documentation page will be available at [http://localhost/docs/swagger](http://localhost/docs/swagger).
+
+With these settings, assuming that your server listens on port 80, the Swagger documentation page will be available at [http://localhost/docs/swagger](http://localhost/docs/swagger).  
 The swagger.json file is available at [http://localhost/docs/swagger/swagger.json](http://localhost/docs/swagger/swagger.json).
+
 ## How to document the API
+
 This module is based on [swagger-jsdoc](https://www.npmjs.com/package/swagger-jsdoc), so you can refer to this module's documentation to document your API.

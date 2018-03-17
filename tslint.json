@@ -1,4 +1,5 @@
 {
+  "exclude": "**/node_modules/**/*",
   "rulesDirectory": [
     "./node_modules/tslint-microsoft-contrib"
   ],
@@ -45,12 +46,12 @@
     "no-constant-condition": true,
     "no-control-regex": true,
     "no-debugger": true,
-    "no-duplicate-case": true,
+    "no-duplicate-switch-case": true,
     "no-duplicate-variable": true,
     "no-empty": true,
     "no-increment-decrement": true,
     "no-invalid-regexp": true,
-    "no-invalid-this": true,
+    "no-invalid-this": false,
     "no-missing-visibility-modifiers": true,
     "no-regex-spaces": true,
     "no-sparse-arrays": true,
@@ -59,6 +60,8 @@
     "no-unnecessary-bind": true,
     "no-unnecessary-override": true,
     "no-unused-expression": true,
+    "no-unused-variable": true,
+    "no-use-before-declare": true,
     "no-with-statement": true,
     "promise-must-complete": true,
     "radix": true,
@@ -69,13 +72,12 @@
     ],
     "use-isnan": true,
     "use-named-parameter": true,
-    "valid-typeof": true,
     "class-name": true,
     "comment-format": [
       true,
       "check-space"
     ],
-    "export-name": false,
+    "export-name": true,
     "import-name": true,
     "interface-name": [
       true,
@@ -94,11 +96,10 @@
       140
     ],
     "member-access": true,
-    "member-ordering": true,
     "new-parens": true,
     "no-construct": true,
     "no-default-export": true,
-    "no-empty-interfaces": true,
+    "no-empty-interface": true,
     "no-for-in": true,
     "no-function-expression": true,
     "no-inferrable-types": false,
@@ -121,7 +122,10 @@
       "property-declaration",
       "member-variable-declaration"
     ],
-    "variable-name": false,
+    "variable-name": [
+      true,
+      "ban-keywords"
+    ],
     "align": [
       true,
       "parameters",

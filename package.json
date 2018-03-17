@@ -4,9 +4,9 @@
   "description": "Create Swagger documentation page based on jsdoc",
   "main": "js/index.js",
   "scripts": {
-    "build": "rm -rf js && tsc",
-    "lint": "tslint -c tslint.json ./src/*.ts ./tests/*.ts --format verbose",
-    "test": "mocha tests --compilers ts:ts-node/register --bail",
+    "build": "rm -rf js && tsc --project tsconfig-build.json",
+    "lint": "tslint -t verbose --project tsconfig.json -c tslint.json ./src/*.ts ./tests/*.ts",
+    "test": "mocha tests --require ts-node/register --bail ./tests/index.ts",
     "cover": "nyc --report-dir tests/coverage npm run test",
     "coveralls": "cat tests/coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
@@ -30,24 +30,24 @@
     "mime-types": "^2.1.15",
     "restify": "^4.3.0",
     "swagger-jsdoc": "^1.3.0",
-    "swagger-ui": "^2.1.5"
+    "swagger-ui": "^2.2.10"
   },
   "devDependencies": {
     "@types/chai": "^3.5.2",
     "@types/mime-types": "^2.1.0",
     "@types/mocha": "^2.2.41",
     "@types/node": "^7.0.22",
-    "@types/restify": "^4.3.2",
+    "@types/restify": "^4.3.6",
     "@types/sinon": "^2.2.2",
-    "chai": "^4.0.0",
-    "coveralls": "^2.13.1",
-    "mocha": "^3.4.2",
-    "nyc": "^10.3.2",
-    "sinon": "^2.3.2",
-    "ts-node": "^3.0.4",
-    "tslint": "^5.3.2",
-    "tslint-microsoft-contrib": "^5.0.0",
-    "typescript": "^2.3.3"
+    "chai": "^4.1.2",
+    "coveralls": "^3.0.0",
+    "mocha": "^5.0.1",
+    "nyc": "^11.4.1",
+    "sinon": "^4.3.0",
+    "ts-node": "^3.3.0",
+    "tslint": "^5.9.1",
+    "tslint-microsoft-contrib": "^5.0.2",
+    "typescript": "^2.7.2"
   },
   "typings": "index.d.ts",
   "nyc": {

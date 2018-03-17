@@ -23,20 +23,19 @@ function createSwaggerPage(options) {
         swaggerDefinition: {
             info: {
                 title: options.title,
-                version: options.version
+                version: options.version,
+                description: typeof options.description === 'string' ? options.description : undefined
             },
+            host: typeof options.host === 'string' ? options.host.replace(/\/+$/, '') : undefined,
+            basePath: typeof options.routePrefix === 'string' ? `/${options.routePrefix.replace(/^\/+/, '')}` : '/',
+            schemes: Array.isArray(options.schemes) ? options.schemes : undefined,
+            tags: Array.isArray(options.tags) ? options.tags : []
         },
-        apis: options.apis || []
+        apis: Array.isArray(options.apis) ? options.apis : []
     });
     if (options.definitions) {
         Object.keys(options.definitions).forEach(key => {
             swaggerSpec.definitions[key] = options.definitions[key];
-        });
-    }
-    if (options.routePrefix && swaggerSpec.hasOwnProperty('paths')) {
-        Object.keys(swaggerSpec.paths).forEach(key => {
-            swaggerSpec.paths['/' + options.routePrefix + key] = swaggerSpec.paths[key];
-            delete (swaggerSpec.paths[key]);
         });
     }
     const publicPath = options.path.replace(/\/+$/, '');
@@ -58,7 +57,7 @@ function createSwaggerPage(options) {
             if (req.params[0] === 'index.html') {
                 const isReqSecure = options.forceSecure || req.isSecure();
                 const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
-                content = new Buffer(content.toString().replace('url = "http://petstore.swagger.io/v2/swagger.json"', `url ="${jsonFileUrl}"`));
+                content = new Buffer(content.toString().replace('url = "http://petstore.swagger.io/v2/swagger.json"', `url = "${jsonFileUrl}"`));
             }
             const contentType = mime.lookup(req.params[0]);
             if (contentType !== false) {
