@@ -13,6 +13,8 @@ interface SwaggerPageOptions {
     definitions?: {[key: string]: any};
     routePrefix?: string;
     forceSecure?: boolean;
+    host?: string;
+    schemes: string[];
 }
 
 export function createSwaggerPage(options: SwaggerPageOptions): void {
@@ -37,6 +39,14 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
         },
         apis: options.apis || []
     });
+
+    if (options.host) {
+        swaggerSpec.host = options.host;
+    }
+
+    if (options.schemes) {
+        swaggerSpec.schemes = options.schemes;
+    }
 
     if (options.definitions) {
         // Add any external definitions provided

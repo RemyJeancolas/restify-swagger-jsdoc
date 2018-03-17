@@ -9,6 +9,8 @@ export interface SwaggerPageOptions {
     definitions?: {[key: string]: any};
     routePrefix?: string;
     forceSecure?: boolean;
+    host?: string;
+    schemes: string[];
 }
 
 export function createSwaggerPage(options: SwaggerPageOptions): void;
