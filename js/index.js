@@ -28,6 +28,12 @@ function createSwaggerPage(options) {
         },
         apis: options.apis || []
     });
+    if (options.host) {
+        swaggerSpec.host = options.host;
+    }
+    if (options.schemes) {
+        swaggerSpec.schemes = options.schemes;
+    }
     if (options.definitions) {
         Object.keys(options.definitions).forEach(key => {
             swaggerSpec.definitions[key] = options.definitions[key];
