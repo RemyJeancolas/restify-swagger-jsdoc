@@ -50,7 +50,7 @@ function createSwaggerPage(options) {
         return next();
     });
     options.server.get(`${publicPath}/*`, (req, res, next) => {
-        const file = req.params['*'];
+        const file = req.params['*'] || req.params[0];
         fs.readFile(path.resolve(swaggerUiPath, file), (err, content) => {
             if (err) {
                 return next(new errors.NotFoundError(`File ${file} does not exist`));
