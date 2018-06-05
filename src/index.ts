@@ -1,4 +1,5 @@
 import * as restify from 'restify';
+import * as errors from 'restify-errors';
 import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -69,19 +70,20 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
         return next();
     });
 
-    options.server.get(new RegExp(publicPath + '\/?$'), (req, res, next) => {
+    options.server.get(`${publicPath}`, (req, res, next) => {
         res.setHeader('Location', `${publicPath}/index.html`);
         res.send(302);
         return next();
     });
 
-    options.server.get(new RegExp(publicPath + '\/(.*)$'), (req, res, next) => {
-        fs.readFile(path.resolve(swaggerUiPath, req.params[0]), (err, content) => {
+    options.server.get(`${publicPath}/*`, (req, res, next) => {
+        const file = req.params['*'] || req.params[0];
+        fs.readFile(path.resolve(swaggerUiPath, file), (err, content) => {
             if (err) {
-                return next(new restify.NotFoundError(`File ${req.params[0]} does not exist`));
+                return next(new errors.NotFoundError(`File ${file} does not exist`));
             }
 
-            if (req.params[0] === 'index.html') {
+            if (file === 'index.html') {
                 const isReqSecure = options.forceSecure || req.isSecure();
                 const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
                 content = new Buffer(content.toString().replace(
@@ -90,7 +92,7 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
                 ));
             }
 
-            const contentType = mime.lookup(req.params[0]);
+            const contentType = mime.lookup(file);
             if (contentType !== false) {
                 res.setHeader('Content-Type', contentType);
             }
