@@ -1,4 +1,4 @@
-import {Server} from 'restify';
+import { Server } from 'restify';
 
 export interface SwaggerPageOptions {
     title: string;
@@ -11,6 +11,7 @@ export interface SwaggerPageOptions {
     schemes?: SwaggerScheme[];
     apis?: string[];
     definitions?: {[key: string]: any};
+    securityDefinitions?: {[key: string]: any};
     routePrefix?: string;
     forceSecure?: boolean;
 }

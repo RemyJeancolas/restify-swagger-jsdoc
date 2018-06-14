@@ -15,6 +15,7 @@ interface SwaggerPageOptions {
     schemes?: SwaggerScheme[];
     apis?: string[];
     definitions?: {[key: string]: any};
+    securityDefinitions?: {[key: string]: any};
     routePrefix?: string;
     forceSecure?: boolean;
 }
@@ -58,6 +59,13 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
         // Add any external definitions provided
         Object.keys(options.definitions).forEach(key => {
             swaggerSpec.definitions[key] = options.definitions[key];
+        });
+    }
+
+    if (options.securityDefinitions) {
+        // Add any security definitions provided
+        Object.keys(options.securityDefinitions).forEach(key => {
+            swaggerSpec.securityDefinitions[key] = options.securityDefinitions[key];
         });
     }
 

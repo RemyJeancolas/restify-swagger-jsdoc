@@ -38,6 +38,12 @@ function createSwaggerPage(options) {
             swaggerSpec.definitions[key] = options.definitions[key];
         });
     }
+	if (options.securityDefinitions) {
+		// Add any security definitions provided
+		Object.keys(options.securityDefinitions).forEach(key => {
+			swaggerSpec.securityDefinitions[key] = options.securityDefinitions[key];
+		});
+	}
     const publicPath = options.path.replace(/\/+$/, '');
     options.server.get(`${publicPath}/swagger.json`, (req, res, next) => {
         res.setHeader('Content-type', 'application/json');
