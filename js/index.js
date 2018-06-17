@@ -19,6 +19,16 @@ function createSwaggerPage(options) {
         throw new Error('options.path is required');
     }
     const swaggerUiPath = path.dirname(require.resolve('swagger-ui'));
+
+    let securityDefinitions ={};
+
+	if (options.securityDefinitions) {
+		// Add any security definitions provided
+		Object.keys(options.securityDefinitions).forEach(key => {
+			securityDefinitions[key] = options.securityDefinitions[key];
+		});
+	}
+
     const swaggerSpec = swaggerJSDoc({
         swaggerDefinition: {
             info: {
@@ -31,19 +41,15 @@ function createSwaggerPage(options) {
             schemes: Array.isArray(options.schemes) ? options.schemes : undefined,
             tags: Array.isArray(options.tags) ? options.tags : []
         },
-        apis: Array.isArray(options.apis) ? options.apis : []
+        apis: Array.isArray(options.apis) ? options.apis : [],
+	    securityDefinitions:securityDefinitions
     });
     if (options.definitions) {
         Object.keys(options.definitions).forEach(key => {
             swaggerSpec.definitions[key] = options.definitions[key];
         });
     }
-	if (options.securityDefinitions) {
-		// Add any security definitions provided
-		Object.keys(options.securityDefinitions).forEach(key => {
-			swaggerSpec.securityDefinitions[key] = options.securityDefinitions[key];
-		});
-	}
+
     const publicPath = options.path.replace(/\/+$/, '');
     options.server.get(`${publicPath}/swagger.json`, (req, res, next) => {
         res.setHeader('Content-type', 'application/json');
