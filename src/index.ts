@@ -1,4 +1,5 @@
 import * as restify from 'restify';
+import * as errors from 'restify-errors';
 import * as swaggerJSDoc from 'swagger-jsdoc';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -78,7 +79,7 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
     options.server.get(new RegExp(publicPath + '\/(.*)$'), (req, res, next) => {
         fs.readFile(path.resolve(swaggerUiPath, req.params[0]), (err, content) => {
             if (err) {
-                return next(new restify.NotFoundError(`File ${req.params[0]} does not exist`));
+                return next(new errors.NotFoundError(`File ${req.params[0]} does not exist`));
             }
 
             if (req.params[0] === 'index.html') {
