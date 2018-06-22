@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const restify = require("restify");
+const errors = require("restify-errors");
 const swaggerJSDoc = require("swagger-jsdoc");
 const path = require("path");
 const fs = require("fs");
@@ -52,7 +52,7 @@ function createSwaggerPage(options) {
     options.server.get(new RegExp(publicPath + '\/(.*)$'), (req, res, next) => {
         fs.readFile(path.resolve(swaggerUiPath, req.params[0]), (err, content) => {
             if (err) {
-                return next(new restify.NotFoundError(`File ${req.params[0]} does not exist`));
+                return next(new errors.NotFoundError(`File ${req.params[0]} does not exist`));
             }
             if (req.params[0] === 'index.html') {
                 const isReqSecure = options.forceSecure || req.isSecure();
