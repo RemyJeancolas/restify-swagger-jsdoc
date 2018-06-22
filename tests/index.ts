@@ -71,19 +71,19 @@ describe('restify-swagger-jsdoc', () => {
 
         describe('Swagger UI files endpoint', () => {
             it('should throw a 404 error if the requested file doesn\'t exist', () => {
-                const getStub = sandbox.stub(server, 'get');
+                const serverGetStub = sandbox.stub(server, 'get');
                 const dirnameStub = sandbox.stub(path, 'dirname').returns('baz');
                 swaggerDoc.createSwaggerPage(options);
 
                 expect(dirnameStub.callCount).to.equal(1);
-                expect(getStub.callCount).to.equal(3);
-                const callback: Function = getStub.thirdCall.args[1];
+                expect(serverGetStub.callCount).to.equal(3);
+                const callback: Function = serverGetStub.thirdCall.args[1];
                 const next = sandbox.spy();
                 const resolveStub = sandbox.stub(path, 'resolve').returns('foo');
                 const readFileStub = sandbox.stub(fs, 'readFile').callsFake((p: string, cb: (err: Error, content?: string) => void) => {
                     cb(new Error('Foo'));
                 });
-                callback({params: ['bar']}, null, next);
+                callback({params: {'*': 'bar'}}, null, next);
 
                 expect(resolveStub.callCount).to.equal(1);
                 expect(resolveStub.lastCall.args).to.deep.equal(['baz', 'bar']);
@@ -108,7 +108,7 @@ describe('restify-swagger-jsdoc', () => {
                 sandbox.stub(fs, 'readFile').callsFake((filePath: string, cb: (err: Error, content?: string) => void) => {
                     cb(null, 'Foo');
                 });
-                callback({params: ['bar']}, res, next);
+                callback({params: {'*': 'bar'}}, res, next);
 
                 expect(lookupStub.callCount).to.equal(1);
                 expect(lookupStub.lastCall.args).to.deep.equal(['bar']);
@@ -135,7 +135,7 @@ describe('restify-swagger-jsdoc', () => {
                 sandbox.stub(fs, 'readFile').callsFake((filePath: string, cb: (err: Error, content?: string) => void) => {
                     cb(null, 'Foo');
                 });
-                callback({params: ['bar']}, res, next);
+                callback({params: {'*': 'bar'}}, res, next);
 
                 expect(lookupStub.callCount).to.equal(1);
                 expect(lookupStub.lastCall.args).to.deep.equal(['bar']);
@@ -164,7 +164,7 @@ describe('restify-swagger-jsdoc', () => {
                 sandbox.stub(fs, 'readFile').callsFake((filePath: string, cb: (err: Error, content?: string) => void) => {
                     cb(null, 'url = "http://petstore.swagger.io/v2/swagger.json"');
                 });
-                callback({params: ['index.html'], isSecure: () => false, headers: {host: 'host'}}, res, next);
+                callback({params: {'*': 'index.html'}, isSecure: () => false, headers: {host: 'host'}}, res, next);
 
                 expect(lookupStub.callCount).to.equal(1);
                 expect(lookupStub.lastCall.args).to.deep.equal(['index.html']);
@@ -193,7 +193,7 @@ describe('restify-swagger-jsdoc', () => {
                 sandbox.stub(fs, 'readFile').callsFake((filePath: string, cb: (err: Error, content?: string) => void) => {
                     cb(null, 'url = "http://petstore.swagger.io/v2/swagger.json"');
                 });
-                callback({params: ['index.html'], isSecure: () => true, headers: {host: 'host'}}, res, next);
+                callback({params: {'*': 'index.html'}, isSecure: () => true, headers: {host: 'host'}}, res, next);
 
                 expect(lookupStub.callCount).to.equal(1);
                 expect(lookupStub.lastCall.args).to.deep.equal(['index.html']);
