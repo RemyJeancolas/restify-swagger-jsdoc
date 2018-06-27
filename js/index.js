@@ -29,7 +29,8 @@ function createSwaggerPage(options) {
             host: typeof options.host === 'string' ? options.host.replace(/\/+$/, '') : undefined,
             basePath: typeof options.routePrefix === 'string' ? `/${options.routePrefix.replace(/^\/+/, '')}` : '/',
             schemes: Array.isArray(options.schemes) ? options.schemes : undefined,
-            tags: Array.isArray(options.tags) ? options.tags : []
+            tags: Array.isArray(options.tags) ? options.tags : [],
+	        securityDefinitions:{}
         },
         apis: Array.isArray(options.apis) ? options.apis : []
     });
