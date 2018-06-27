@@ -65,7 +65,7 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
     if (options.securityDefinitions) {
         // Add any security definitions provided
         Object.keys(options.securityDefinitions).forEach(key => {
-            swaggerSpec.securityDefinitions[key] = options.securityDefinitions[key];
+            swaggerSpec.swaggerDefinition.securityDefinitions[key] = options.securityDefinitions[key];
         });
     }
 
