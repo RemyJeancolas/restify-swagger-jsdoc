@@ -40,6 +40,15 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
 
     const swaggerUiPath = path.dirname(require.resolve('swagger-ui'));
 
+    const securityDefinitions: {[key: string]: any} = {};
+
+    if (options.securityDefinitions) {
+        // Add any security definitions provided
+        Object.keys(options.securityDefinitions).forEach(key => {
+            securityDefinitions[key] = options.securityDefinitions[key];
+        });
+    }
+
     const swaggerSpec = swaggerJSDoc({
         swaggerDefinition: {
             info: {
@@ -50,7 +59,8 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
             host: typeof options.host === 'string' ? options.host.replace(/\/+$/, '') : undefined,
             basePath: typeof options.routePrefix === 'string' ? `/${options.routePrefix.replace(/^\/+/, '')}` : '/',
             schemes: Array.isArray(options.schemes) ? options.schemes : undefined,
-            tags: Array.isArray(options.tags) ? options.tags : []
+            tags: Array.isArray(options.tags) ? options.tags : [],
+            securityDefinitions: securityDefinitions
         },
         apis: Array.isArray(options.apis) ? options.apis : []
     });
@@ -59,13 +69,6 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
         // Add any external definitions provided
         Object.keys(options.definitions).forEach(key => {
             swaggerSpec.definitions[key] = options.definitions[key];
-        });
-    }
-
-    if (options.securityDefinitions) {
-        // Add any security definitions provided
-        Object.keys(options.securityDefinitions).forEach(key => {
-            swaggerSpec.swaggerDefinition.securityDefinitions[key] = options.securityDefinitions[key];
         });
     }
 

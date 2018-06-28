@@ -19,33 +19,27 @@ function createSwaggerPage(options) {
         throw new Error('options.path is required');
     }
     const swaggerUiPath = path.dirname(require.resolve('swagger-ui'));
-
-    let securityDefinitions = {};
-
-	if (options.securityDefinitions) {
-		Object.keys(options.securityDefinitions).forEach(key => {
-			securityDefinitions[key] = options.securityDefinitions[key];
-		});
-	}
-
-    const swaggerOptions = {
-	    swaggerDefinition: {
-		    info: {
-			    title: options.title,
-			    version: options.version,
-			    description: typeof options.description === 'string' ? options.description : undefined
-		    },
-		    host: typeof options.host === 'string' ? options.host.replace(/\/+$/, '') : undefined,
-		    basePath: typeof options.routePrefix === 'string' ? `/${options.routePrefix.replace(/^\/+/, '')}` : '/',
-		    schemes: Array.isArray(options.schemes) ? options.schemes : undefined,
-		    tags: Array.isArray(options.tags) ? options.tags : [],
-		    securityDefinitions:securityDefinitions
-	    },
-	    apis: Array.isArray(options.apis) ? options.apis : []
-    };
-
-    const swaggerSpec = swaggerJSDoc(swaggerOptions);
-
+    const securityDefinitions = {};
+    if (options.securityDefinitions) {
+        Object.keys(options.securityDefinitions).forEach(key => {
+            securityDefinitions[key] = options.securityDefinitions[key];
+        });
+    }
+    const swaggerSpec = swaggerJSDoc({
+        swaggerDefinition: {
+            info: {
+                title: options.title,
+                version: options.version,
+                description: typeof options.description === 'string' ? options.description : undefined
+            },
+            host: typeof options.host === 'string' ? options.host.replace(/\/+$/, '') : undefined,
+            basePath: typeof options.routePrefix === 'string' ? `/${options.routePrefix.replace(/^\/+/, '')}` : '/',
+            schemes: Array.isArray(options.schemes) ? options.schemes : undefined,
+            tags: Array.isArray(options.tags) ? options.tags : [],
+            securityDefinitions: securityDefinitions
+        },
+        apis: Array.isArray(options.apis) ? options.apis : []
+    });
     if (options.definitions) {
         Object.keys(options.definitions).forEach(key => {
             swaggerSpec.definitions[key] = options.definitions[key];
