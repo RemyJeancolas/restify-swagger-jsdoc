@@ -9,6 +9,13 @@ Create Swagger documentation page based on jsdoc
 
 ## Installation
 
+### :warning: Check your restify version
+
+**If you use a restify version prior to v7, you must use the following command:**
+```bash
+npm install restify-swagger-jsdoc@^1 --production
+```
+Else you can use the following command:
 ```bash
 npm install restify-swagger-jsdoc --production
 ```
