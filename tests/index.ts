@@ -162,7 +162,7 @@ describe('restify-swagger-jsdoc', () => {
                 const endStub = sandbox.stub(res, 'end');
                 sandbox.stub(path, 'resolve').returns('foo');
                 sandbox.stub(fs, 'readFile').callsFake((filePath: string, cb: (err: Error, content?: string) => void) => {
-                    cb(null, 'url = "http://petstore.swagger.io/v2/swagger.json"');
+                    cb(null, 'url: "https://petstore.swagger.io/v2/swagger.json"');
                 });
                 callback({params: {'*': 'index.html'}, isSecure: () => false, headers: {host: 'host'}}, res, next);
 
@@ -171,7 +171,7 @@ describe('restify-swagger-jsdoc', () => {
                 expect(setHeaderStub.callCount).to.equal(1);
                 expect(setHeaderStub.lastCall.args).to.deep.equal(['Content-Type', 'foobar']);
                 expect(writeStub.callCount).to.equal(1);
-                expect(writeStub.lastCall.args[0].toString()).to.equal(`url = "http://host${options.path}/swagger.json"`);
+                expect(writeStub.lastCall.args[0].toString()).to.equal(`url: "http://host${options.path}/swagger.json"`);
                 expect(endStub.callCount).to.equal(1);
                 expect(next.callCount).to.equal(1);
             });
@@ -191,7 +191,7 @@ describe('restify-swagger-jsdoc', () => {
                 const endStub = sandbox.stub(res, 'end');
                 sandbox.stub(path, 'resolve').returns('foo');
                 sandbox.stub(fs, 'readFile').callsFake((filePath: string, cb: (err: Error, content?: string) => void) => {
-                    cb(null, 'url = "http://petstore.swagger.io/v2/swagger.json"');
+                    cb(null, 'url: "https://petstore.swagger.io/v2/swagger.json"');
                 });
                 callback({params: {'*': 'index.html'}, isSecure: () => true, headers: {host: 'host'}}, res, next);
 
@@ -200,7 +200,7 @@ describe('restify-swagger-jsdoc', () => {
                 expect(setHeaderStub.callCount).to.equal(1);
                 expect(setHeaderStub.lastCall.args).to.deep.equal(['Content-Type', 'foobar']);
                 expect(writeStub.callCount).to.equal(1);
-                expect(writeStub.lastCall.args[0].toString()).to.equal(`url = "https://host${options.path}/swagger.json"`);
+                expect(writeStub.lastCall.args[0].toString()).to.equal(`url: "https://host${options.path}/swagger.json"`);
                 expect(endStub.callCount).to.equal(1);
                 expect(next.callCount).to.equal(1);
             });
@@ -290,14 +290,14 @@ describe('restify-swagger-jsdoc', () => {
         // expect(readFileStub.callCount).to.equal(1);
 
         // readFileStub.callsFake((p: string, callback: (e: Error, content?: any) => any) => {
-        //     callback(null, new Buffer('url = "http://petstore.swagger.io/v2/swagger.json"'));
+        //     callback(null, new Buffer('url: "https://petstore.swagger.io/v2/swagger.json"'));
         // });
         // const writeStub = sandbox.stub(res, 'write');
         // const endStub = sandbox.stub(res, 'end');
         // options.definitions = {foo: 'bar'};
         // expect(() => swaggerDoc.createSwaggerPage(options)).to.not.throw();
         // expect(writeStub.callCount).to.equal(1);
-        // expect(writeStub.lastCall.args[0].toString()).to.equal('url = "http://petstore.swagger.io/v2/swagger.json"');
+        // expect(writeStub.lastCall.args[0].toString()).to.equal('url: "https://petstore.swagger.io/v2/swagger.json"');
         // expect(endStub.callCount).to.equal(1);
 
         // const isSecureStub = sandbox.stub(req, 'isSecure').returns(true);
@@ -306,13 +306,13 @@ describe('restify-swagger-jsdoc', () => {
         // options.routePrefix = 'bar';
         // expect(() => swaggerDoc.createSwaggerPage(options)).to.not.throw();
         // expect(writeStub.callCount).to.equal(2);
-        // expect(writeStub.lastCall.args[0].toString()).to.equal('url ="https://baz/swagger/swagger.json"');
+        // expect(writeStub.lastCall.args[0].toString()).to.equal('url:"https://baz/swagger/swagger.json"');
         // expect(endStub.callCount).to.equal(2);
 
         // isSecureStub.returns(false);
         // expect(() => swaggerDoc.createSwaggerPage(options)).to.not.throw();
         // expect(writeStub.callCount).to.equal(3);
-        // expect(writeStub.lastCall.args[0].toString()).to.equal('url ="http://baz/swagger/swagger.json"');
+        // expect(writeStub.lastCall.args[0].toString()).to.equal('url:"http://baz/swagger/swagger.json"');
         // expect(endStub.callCount).to.equal(3);
     });
 });
