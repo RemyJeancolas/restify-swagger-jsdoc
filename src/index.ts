@@ -40,6 +40,8 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
 
     const swaggerUiPath = path.dirname(require.resolve('swagger-ui'));
 
+    const host = typeof options.host === 'string' ? options.host.replace(/\/+$/, '') : undefined;
+
     const swaggerSpec = swaggerJSDoc({
         swaggerDefinition: {
             info: {
@@ -47,7 +49,7 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
                 version: options.version,
                 description: typeof options.description === 'string' ? options.description : undefined
             },
-            host: typeof options.host === 'string' ? options.host.replace(/\/+$/, '') : undefined,
+            host,
             basePath: typeof options.routePrefix === 'string' ? `/${options.routePrefix.replace(/^\/+/, '')}` : '/',
             schemes: Array.isArray(options.schemes) ? options.schemes : undefined,
             tags: Array.isArray(options.tags) ? options.tags : []
@@ -85,7 +87,8 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
 
             if (file === 'index.html') {
                 const isReqSecure = options.forceSecure || req.isSecure();
-                const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
+                const jsonFileHost = typeof host === 'string' ? host : req.headers.host;
+                const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${jsonFileHost}${publicPath}/swagger.json`;
                 content = new Buffer(content.toString().replace(
                     'url = "http://petstore.swagger.io/v2/swagger.json"',
                     `url = "${jsonFileUrl}"`
