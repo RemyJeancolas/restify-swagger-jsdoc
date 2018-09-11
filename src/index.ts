@@ -10,6 +10,7 @@ interface SwaggerPageOptions {
     version: string;
     server: restify.Server;
     path: string;
+    publicPath?: string;
     description?: string;
     tags?: SwaggerTag[];
     host?: string;
@@ -40,6 +41,8 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
 
     const swaggerUiPath = path.dirname(require.resolve('swagger-ui'));
 
+    const host = typeof options.host === 'string' ? options.host.replace(/\/+$/, '') : undefined;
+
     const swaggerSpec = swaggerJSDoc({
         swaggerDefinition: {
             info: {
@@ -47,7 +50,7 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
                 version: options.version,
                 description: typeof options.description === 'string' ? options.description : undefined
             },
-            host: typeof options.host === 'string' ? options.host.replace(/\/+$/, '') : undefined,
+            host,
             basePath: typeof options.routePrefix === 'string' ? `/${options.routePrefix.replace(/^\/+/, '')}` : '/',
             schemes: Array.isArray(options.schemes) ? options.schemes : undefined,
             tags: Array.isArray(options.tags) ? options.tags : []
@@ -62,21 +65,23 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
         });
     }
 
-    const publicPath = options.path.replace(/\/+$/, '');
+    // trim trailing slash
+    const routePath = options.path.replace(/\/+$/, '');
+    const publicPath = (options.publicPath || routePath).replace(/\/+$/, '');
 
-    options.server.get(`${publicPath}/swagger.json`, (req, res, next) => {
+    options.server.get(`${routePath}/swagger.json`, (req, res, next) => {
         res.setHeader('Content-type', 'application/json');
         res.send(swaggerSpec);
         return next();
     });
 
-    options.server.get(publicPath, (req, res, next) => {
-        res.setHeader('Location', `${publicPath}/index.html`);
+    options.server.get(routePath, (req, res, next) => {
+        res.setHeader('Location', `${routePath}/index.html`);
         res.send(302);
         return next();
     });
 
-    options.server.get(`${publicPath}/*`, (req, res, next) => {
+    options.server.get(`${routePath}/*`, (req, res, next) => {
         const file = req.params['*'];
         fs.readFile(path.resolve(swaggerUiPath, file), (err, content) => {
             if (err) {
@@ -85,7 +90,8 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
 
             if (file === 'index.html') {
                 const isReqSecure = options.forceSecure || req.isSecure();
-                const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
+                const jsonFileHost = typeof host === 'string' ? host : req.headers.host;
+                const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${jsonFileHost}${publicPath}/swagger.json`;
                 content = new Buffer(content.toString().replace(
                     'url = "http://petstore.swagger.io/v2/swagger.json"',
                     `url = "${jsonFileUrl}"`
