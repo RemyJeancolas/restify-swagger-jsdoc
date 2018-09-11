@@ -38,7 +38,7 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
         throw new Error('options.path is required');
     }
 
-    const swaggerUiPath = path.dirname(require.resolve('swagger-ui'));
+    const swaggerUiPath = path.dirname(require.resolve('swagger-ui-dist'));
 
     const swaggerSpec = swaggerJSDoc({
         swaggerDefinition: {
@@ -87,8 +87,8 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
                 const isReqSecure = options.forceSecure || req.isSecure();
                 const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
                 content = new Buffer(content.toString().replace(
-                    'url = "http://petstore.swagger.io/v2/swagger.json"',
-                    `url = "${jsonFileUrl}"`
+                    'url: "https://petstore.swagger.io/v2/swagger.json"',
+                    `url: "${jsonFileUrl}"`
                 ));
             }
 
