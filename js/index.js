@@ -65,6 +65,7 @@ function createSwaggerPage(options) {
                 const isReqSecure = options.forceSecure || req.isSecure();
                 const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
                 content = new Buffer(content.toString().replace('url = "http://petstore.swagger.io/v2/swagger.json"', `url = "${jsonFileUrl}"`));
+                content = new Buffer(content.toString().replace('showOperationIds: false', `showOperationIds: false, validatorUrl:false`));
             }
             const contentType = mime.lookup(req.params[0]);
             if (contentType !== false) {
