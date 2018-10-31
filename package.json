@@ -22,36 +22,59 @@
     "jsdoc",
     "api"
   ],
-  "author": "Rémy Jeancolas",
+  "author": {
+    "name": "Rémy Jeancolas",
+    "url": "https://github.com/RemyJeancolas",
+    "email": "remy.jeancolas@illogeek.eu"
+  },
+  "contributors": [
+    {
+      "name": "Yannick Cordinier",
+      "url": "https://github.com/speedazerty"
+    },
+    {
+      "name": "Jared",
+      "url": "https://github.com/jad007"
+    },
+    {
+      "name": "Mitchell Bundy",
+      "url": "https://github.com/mgebundy",
+      "email": "mitch@bundy.ca"
+    },
+    {
+      "name": "Chris McKnight",
+      "url": "https://github.com/cmckni3"
+    }
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/RemyJeancolas/restify-swagger-jsdoc/issues"
   },
   "homepage": "https://github.com/RemyJeancolas/restify-swagger-jsdoc#readme",
   "dependencies": {
-    "mime-types": "^2.1.15",
+    "mime-types": "^2.1.21",
     "restify-errors": "^6.1.1",
-    "swagger-jsdoc": "^1.3.0",
+    "swagger-jsdoc": "^1.10.3",
     "swagger-ui-dist": "^3.18.2"
   },
   "devDependencies": {
     "@types/chai": "^3.5.2",
     "@types/mime-types": "^2.1.0",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^7.0.22",
-    "@types/restify": "^7.2.1",
+    "@types/node": "^7.10.0",
+    "@types/restify": "^7.2.5",
     "@types/restify-errors": "^4.3.3",
     "@types/sinon": "^2.2.2",
-    "chai": "^4.1.2",
-    "coveralls": "^3.0.0",
+    "chai": "^4.2.0",
+    "coveralls": "^3.0.2",
     "mocha": "^5.0.1",
     "nyc": "^11.4.1",
-    "restify": "^7.2.1",
+    "restify": "^7.2.2",
     "sinon": "^4.3.0",
     "ts-node": "^3.3.0",
-    "tslint": "^5.9.1",
-    "tslint-microsoft-contrib": "^5.0.2",
-    "typescript": "^2.7.2"
+    "tslint": "^5.11.0",
+    "tslint-microsoft-contrib": "^5.2.1",
+    "typescript": "^3.1.4"
   },
   "peerDependencies": {
     "restify": "^7"

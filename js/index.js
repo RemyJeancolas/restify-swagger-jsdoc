@@ -18,7 +18,7 @@ function createSwaggerPage(options) {
     else if (!options.path) {
         throw new Error('options.path is required');
     }
-    const swaggerUiPath = path.dirname(require.resolve('swagger-ui'));
+    const swaggerUiPath = path.dirname(require.resolve('swagger-ui-dist'));
     const swaggerSpec = swaggerJSDoc({
         swaggerDefinition: {
             info: {
@@ -58,7 +58,7 @@ function createSwaggerPage(options) {
             if (file === 'index.html') {
                 const isReqSecure = options.forceSecure || req.isSecure();
                 const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
-                content = new Buffer(content.toString().replace('url = "http://petstore.swagger.io/v2/swagger.json"', `url = "${jsonFileUrl}"`));
+                content = new Buffer(content.toString().replace('url: "https://petstore.swagger.io/v2/swagger.json"', `url: "${jsonFileUrl}"`));
             }
             const contentType = mime.lookup(file);
             if (contentType !== false) {
