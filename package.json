@@ -54,7 +54,7 @@
   "dependencies": {
     "mime-types": "^2.1.21",
     "restify-errors": "^6.1.1",
-    "swagger-jsdoc": "^1.10.3",
+    "swagger-jsdoc": "^3.2.6",
     "swagger-ui-dist": "^3.18.2"
   },
   "devDependencies": {
