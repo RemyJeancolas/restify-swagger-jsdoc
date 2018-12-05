@@ -26,6 +26,7 @@ function createSwaggerPage(options) {
                 version: options.version,
                 description: typeof options.description === 'string' ? options.description : undefined
             },
+            openapi: '3.0.0',
             host: typeof options.host === 'string' ? options.host.replace(/\/+$/, '') : undefined,
             basePath: typeof options.routePrefix === 'string' ? `/${options.routePrefix.replace(/^\/+/, '')}` : '/',
             schemes: Array.isArray(options.schemes) ? options.schemes : undefined,
@@ -33,9 +34,9 @@ function createSwaggerPage(options) {
         },
         apis: Array.isArray(options.apis) ? options.apis : []
     });
-    if (options.definitions) {
-        Object.keys(options.definitions).forEach(key => {
-            swaggerSpec.definitions[key] = options.definitions[key];
+    if (options.components) {
+        Object.keys(options.components).forEach(key => {
+            swaggerSpec.components[key] = options.components[key];
         });
     }
     const publicPath = options.path.replace(/\/+$/, '');

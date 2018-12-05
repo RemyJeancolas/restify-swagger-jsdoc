@@ -3,7 +3,7 @@ declare module 'swagger-jsdoc' {
         interface options {
             swaggerDefinition: optionsDefinition;
             apis: string[];
-            definitions?: {[key: string]: any};
+            components?: {[key: string]: any};
             paths?: {[key: string]: string};
         }
 
@@ -13,6 +13,7 @@ declare module 'swagger-jsdoc' {
             basePath?: string;
             schemes?: ('http' | 'https' | 'ws' | 'wss')[];
             tags?: {name: string, description: string}[];
+            openapi?: string;
         }
 
         interface optionsDefinitionInfo {

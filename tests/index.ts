@@ -222,12 +222,9 @@ describe('restify-swagger-jsdoc', () => {
                 info: { title: options.title, version: options.version },
                 basePath: '/',
                 tags: [],
-                swagger: '2.0',
+                openapi: '3.0.0',
                 paths: {},
-                definitions: {},
-                responses: {},
-                parameters: {},
-                securityDefinitions: {}
+                components: {},
             }, 'Params should be as expected');
         });
 
@@ -239,7 +236,7 @@ describe('restify-swagger-jsdoc', () => {
                 schemes: [],
                 tags: [],
                 apis: [],
-                definitions: {foo: 'bar'}
+                components: {foo: 'bar'}
             }, options);
             const getStub = sandbox.stub(server, 'get');
             swaggerDoc.createSwaggerPage(localOptions);
@@ -258,12 +255,9 @@ describe('restify-swagger-jsdoc', () => {
                 basePath: '/p',
                 schemes: [],
                 tags: [],
-                swagger: '2.0',
+                openapi: '3.0.0',
                 paths: {},
-                definitions: {foo: 'bar'},
-                responses: {},
-                parameters: {},
-                securityDefinitions: {}
+                components: {foo: 'bar'}
             });
         });
 

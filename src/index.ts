@@ -15,7 +15,7 @@ interface SwaggerPageOptions {
     host?: string;
     schemes?: SwaggerScheme[];
     apis?: string[];
-    definitions?: {[key: string]: any};
+    components?: {[key: string]: any};
     routePrefix?: string;
     forceSecure?: boolean;
 }
@@ -47,6 +47,7 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
                 version: options.version,
                 description: typeof options.description === 'string' ? options.description : undefined
             },
+            openapi: '3.0.0',
             host: typeof options.host === 'string' ? options.host.replace(/\/+$/, '') : undefined,
             basePath: typeof options.routePrefix === 'string' ? `/${options.routePrefix.replace(/^\/+/, '')}` : '/',
             schemes: Array.isArray(options.schemes) ? options.schemes : undefined,
@@ -55,10 +56,10 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
         apis: Array.isArray(options.apis) ? options.apis : []
     });
 
-    if (options.definitions) {
+    if (options.components) {
         // Add any external definitions provided
-        Object.keys(options.definitions).forEach(key => {
-            swaggerSpec.definitions[key] = options.definitions[key];
+        Object.keys(options.components).forEach(key => {
+            swaggerSpec.components[key] = options.components[key];
         });
     }
 
