@@ -40,8 +40,9 @@ restifySwaggerJsdoc.createSwaggerPage({
     schemes: [], // The transfer protocol of the API. Values MUST be from the list: "http", "https", "ws", "wss". (default: [])
     apis: [ `${__dirname}/controllers/*.js` ], // Path to the API docs (default: [])
     definitions: {myObject: require('api/myObject.json')}, // External definitions to add to swagger (default: [])
-    routePrefix: 'prefix', // prefix to add for all routes (default: '')
-    forceSecure: false // force swagger-ui to use https protocol to load JSON file (default: false)
+    routePrefix: 'prefix', // Prefix to add for all routes (default: '')
+    forceSecure: false, // Force swagger-ui to use https protocol to load JSON file (default: false)
+    validatorUrl: 'http://example.com' // Validate specs against given validator, set to null to disable validation (default: 'https://online.swagger.io/validator')
 });
 ```
 

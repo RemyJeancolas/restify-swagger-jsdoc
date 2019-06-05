@@ -5,11 +5,11 @@
   "main": "js/index.js",
   "scripts": {
     "build": "rm -rf js && tsc --project tsconfig-build.json",
-    "lint": "tslint -t verbose --project tsconfig.json -c tslint.json ./src/*.ts ./tests/*.ts",
+    "lint": "tslint --fix -t verbose --project tsconfig.json -c tslint.json ./src/*.ts ./tests/*.ts",
     "test": "npm run test:unit && npm run test:server",
     "test:unit": "mocha tests --require ts-node/register --bail ./tests/index.ts",
     "test:server": "./tests/test-server.sh",
-    "cover": "nyc --report-dir tests/coverage npm run test",
+    "cover": "nyc --report-dir tests/coverage npm run test:unit",
     "coveralls": "cat tests/coverage/lcov.info | ./node_modules/.bin/coveralls"
   },
   "repository": {

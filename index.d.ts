@@ -13,6 +13,7 @@ export interface SwaggerPageOptions {
     definitions?: {[key: string]: any};
     routePrefix?: string;
     forceSecure?: boolean;
+    validatorUrl?: string;
 }
 
 export type SwaggerScheme = 'http' | 'https' | 'ws' | 'wss';

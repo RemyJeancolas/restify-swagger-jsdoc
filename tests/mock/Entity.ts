@@ -1,15 +1,15 @@
 /**
- * @swagger
- * definitions:
- *   Foo:
- *     type: object
- *     properties:
- *       id:
- *         type: integer
- *       name:
- *         type: string
- */
+* @swagger
+* definitions:
+*   Foo:
+*     type: object
+*     properties:
+*       id:
+*         type: integer
+*       name:
+*         type: string
+*/
 export class Entity {
-    public id: number;
-    public name: string;
+  public id: number;
+  public name: string;
 }

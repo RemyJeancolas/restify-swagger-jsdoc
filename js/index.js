@@ -5,6 +5,11 @@ const swaggerJSDoc = require("swagger-jsdoc");
 const path = require("path");
 const fs = require("fs");
 const mime = require("mime-types");
+function addSwaggerUiConfig(content, variableName, value) {
+    const line = 'layout: "StandaloneLayout"';
+    const formattedValue = typeof value === 'string' ? `"${value}"` : value;
+    return content.replace(line, `${line},\n${' '.repeat(8)}${variableName}: ${formattedValue}`);
+}
 function createSwaggerPage(options) {
     if (!options.title) {
         throw new Error('options.title is required');
@@ -58,7 +63,11 @@ function createSwaggerPage(options) {
             if (file === 'index.html') {
                 const isReqSecure = options.forceSecure || req.isSecure();
                 const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
-                content = Buffer.from(content.toString().replace('url: "https://petstore.swagger.io/v2/swagger.json"', `url: "${jsonFileUrl}"`));
+                let localContent = content.toString().replace('url: "https://petstore.swagger.io/v2/swagger.json"', `url: "${jsonFileUrl}"`);
+                if (options.validatorUrl === null || typeof options.validatorUrl === 'string') {
+                    localContent = addSwaggerUiConfig(localContent, 'validatorUrl', options.validatorUrl);
+                }
+                content = Buffer.from(localContent);
             }
             const contentType = mime.lookup(file);
             if (contentType !== false) {
