@@ -86,7 +86,7 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
             if (file === 'index.html') {
                 const isReqSecure = options.forceSecure || req.isSecure();
                 const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
-                content = new Buffer(content.toString().replace(
+                content = Buffer.from(content.toString().replace(
                     'url: "https://petstore.swagger.io/v2/swagger.json"',
                     `url: "${jsonFileUrl}"`
                 ));
