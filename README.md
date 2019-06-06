@@ -42,7 +42,8 @@ restifySwaggerJsdoc.createSwaggerPage({
     routePrefix: 'prefix', // Prefix to add for all routes (default: '')
     forceSecure: false, // Force swagger-ui to use https protocol to load JSON file (default: false)
     validatorUrl: 'http://example.com', // Validate specs against given validator, set to null to disable validation (default: 'https://online.swagger.io/validator')
-    supportedSubmitMethods: ['get', 'post'] // List of HTTP methods that have the Try it out feature enabled. An empty array disables Try it out for all operations. (default: ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'])
+    supportedSubmitMethods: ['get', 'post'], // List of HTTP methods that have the Try it out feature enabled. An empty array disables Try it out for all operations. (default: ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'])
+    securityDefinitions: {} // List of authentication methods available for the current API, these methods will be available when clicking on the "Authorize" button on the UI (default: undefined, more detail here: https://swagger.io/docs/specification/2-0/authentication/)
 });
 ```
 

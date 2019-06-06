@@ -293,8 +293,7 @@ describe('restify-swagger-jsdoc', () => {
         paths: {},
         definitions: {},
         responses: {},
-        parameters: {},
-        securityDefinitions: {}
+        parameters: {}
       }, 'Params should be as expected');
     });
 
@@ -306,7 +305,12 @@ describe('restify-swagger-jsdoc', () => {
         schemes: [],
         tags: [],
         apis: [],
-        definitions: {foo: 'bar'}
+        definitions: {foo: 'bar'},
+        securityDefinitions: {
+          basic: {
+            type: 'basic'
+          }
+        }
       }, options);
       const getStub = sandbox.stub(server, 'get');
       swaggerDoc.createSwaggerPage(localOptions);
@@ -328,9 +332,13 @@ describe('restify-swagger-jsdoc', () => {
         swagger: '2.0',
         paths: {},
         definitions: {foo: 'bar'},
+        securityDefinitions: {
+          basic: {
+            type: 'basic'
+          }
+        },
         responses: {},
-        parameters: {},
-        securityDefinitions: {}
+        parameters: {}
       });
     });
   });

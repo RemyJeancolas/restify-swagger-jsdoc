@@ -20,6 +20,7 @@ interface SwaggerPageOptions {
   forceSecure?: boolean;
   validatorUrl?: string;
   supportedSubmitMethods?: SwaggerSupportedHttpMethods[];
+  securityDefinitions?: {[k: string]: any};
 }
 
 type SwaggerScheme = 'http' | 'https' | 'ws' | 'wss';
@@ -71,6 +72,14 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
     Object.keys(options.definitions).forEach(key => {
       swaggerSpec.definitions[key] = options.definitions[key];
     });
+  }
+
+  if (options.securityDefinitions && Object.keys(options.securityDefinitions).length > 0) {
+    for (const k of Object.keys(options.securityDefinitions)) {
+      swaggerSpec.securityDefinitions[k] = options.securityDefinitions[k];
+    }
+  } else {
+    delete swaggerSpec.securityDefinitions;
   }
 
   const publicPath = options.path.replace(/\/+$/, '');
