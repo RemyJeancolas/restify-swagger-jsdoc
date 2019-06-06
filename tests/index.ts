@@ -212,6 +212,37 @@ describe('restify-swagger-jsdoc', () => {
         expect(writeStub.lastCall.args[0].toString()).to.equal(`layout: "StandaloneLayout",\n${' '.repeat(8)}validatorUrl: "foo"`);
       });
 
+      it('should handle supportedSubmitMethods if provided', () => {
+        const localOptions = {...options, supportedSubmitMethods: []};
+        const getStub = sandbox.stub(server, 'get');
+        const dirnameStub = sandbox.stub(path, 'dirname').returns('baz');
+        swaggerDoc.createSwaggerPage(localOptions);
+
+        expect(dirnameStub.callCount).to.equal(1);
+        expect(getStub.callCount).to.equal(3);
+        const callback: Function = getStub.thirdCall.args[1];
+        const next = sandbox.spy();
+        const lookupStub = sandbox.stub(mime, 'lookup').returns('foobar');
+        const setHeaderStub = sandbox.stub(res, 'setHeader');
+        const writeStub = sandbox.stub(res, 'write');
+        const endStub = sandbox.stub(res, 'end');
+        sandbox.stub(path, 'resolve').returns('foo');
+        sandbox.stub(fs, 'readFile').callsFake((filePath: string, cb: (err: Error, content?: string) => void) => {
+          cb(null, 'layout: "StandaloneLayout"');
+        });
+        callback({params: {'*': 'index.html'}, isSecure: () => false, headers: {host: 'host'}}, res, next);
+
+        expect(lookupStub.callCount).to.equal(1);
+        expect(lookupStub.lastCall.args).to.deep.equal(['index.html']);
+        expect(setHeaderStub.callCount).to.equal(1);
+        expect(setHeaderStub.lastCall.args).to.deep.equal(['Content-Type', 'foobar']);
+        expect(writeStub.callCount).to.equal(1);
+        // tslint:disable-next-line:chai-vague-errors
+        expect(writeStub.lastCall.args[0].toString()).to.equal(`layout: "StandaloneLayout",\n${' '.repeat(8)}supportedSubmitMethods: []`);
+        expect(endStub.callCount).to.equal(1);
+        expect(next.callCount).to.equal(1);
+      });
+
       it('should send json file over https if options.forceSecure or req.isSecure() === true', () => {
         const getStub = sandbox.stub(server, 'get');
         const dirnameStub = sandbox.stub(path, 'dirname').returns('baz');

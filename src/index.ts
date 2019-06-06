@@ -19,9 +19,11 @@ interface SwaggerPageOptions {
   routePrefix?: string;
   forceSecure?: boolean;
   validatorUrl?: string;
+  supportedSubmitMethods?: SwaggerSupportedHttpMethods[];
 }
 
 type SwaggerScheme = 'http' | 'https' | 'ws' | 'wss';
+type SwaggerSupportedHttpMethods = 'get' | 'put' | 'post' | 'delete' | 'options' | 'head' | 'patch' | 'trace';
 
 interface SwaggerTag {
   name: string;
@@ -30,10 +32,9 @@ interface SwaggerTag {
 
 function addSwaggerUiConfig(content: string, variableName: string, value: any): string {
   const line = 'layout: "StandaloneLayout"';
-  const formattedValue = typeof value === 'string' ? `"${value}"` : value;
   return content.replace(
     line,
-    `${line},\n${' '.repeat(8)}${variableName}: ${formattedValue}`
+    `${line},\n${' '.repeat(8)}${variableName}: ${JSON.stringify(value)}`
   );
 }
 
@@ -103,6 +104,10 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
 
         if (options.validatorUrl === null || typeof options.validatorUrl === 'string') {
           localContent = addSwaggerUiConfig(localContent, 'validatorUrl', options.validatorUrl);
+        }
+
+        if (Array.isArray(options.supportedSubmitMethods)) {
+          localContent = addSwaggerUiConfig(localContent, 'supportedSubmitMethods', options.supportedSubmitMethods);
         }
 
         content = Buffer.from(localContent);

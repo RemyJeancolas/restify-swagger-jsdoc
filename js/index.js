@@ -7,8 +7,7 @@ const fs = require("fs");
 const mime = require("mime-types");
 function addSwaggerUiConfig(content, variableName, value) {
     const line = 'layout: "StandaloneLayout"';
-    const formattedValue = typeof value === 'string' ? `"${value}"` : value;
-    return content.replace(line, `${line},\n${' '.repeat(8)}${variableName}: ${formattedValue}`);
+    return content.replace(line, `${line},\n${' '.repeat(8)}${variableName}: ${JSON.stringify(value)}`);
 }
 function createSwaggerPage(options) {
     if (!options.title) {
@@ -66,6 +65,9 @@ function createSwaggerPage(options) {
                 let localContent = content.toString().replace('url: "https://petstore.swagger.io/v2/swagger.json"', `url: "${jsonFileUrl}"`);
                 if (options.validatorUrl === null || typeof options.validatorUrl === 'string') {
                     localContent = addSwaggerUiConfig(localContent, 'validatorUrl', options.validatorUrl);
+                }
+                if (Array.isArray(options.supportedSubmitMethods)) {
+                    localContent = addSwaggerUiConfig(localContent, 'supportedSubmitMethods', options.supportedSubmitMethods);
                 }
                 content = Buffer.from(localContent);
             }

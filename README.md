@@ -5,7 +5,6 @@ Create Swagger documentation page based on jsdoc
 [![Coverage Status](https://coveralls.io/repos/github/RemyJeancolas/restify-swagger-jsdoc/badge.svg?branch=master)](https://coveralls.io/github/RemyJeancolas/restify-swagger-jsdoc?branch=master)
 [![npm Version](https://img.shields.io/npm/v/restify-swagger-jsdoc.svg)](https://www.npmjs.com/package/restify-swagger-jsdoc)
 [![npm Downloads](https://img.shields.io/npm/dm/restify-swagger-jsdoc.svg)](https://www.npmjs.com/package/restify-swagger-jsdoc)
-[![Dependency Status](https://gemnasium.com/badges/github.com/RemyJeancolas/restify-swagger-jsdoc.svg)](https://gemnasium.com/github.com/RemyJeancolas/restify-swagger-jsdoc)
 
 ## Installation
 
@@ -37,12 +36,13 @@ restifySwaggerJsdoc.createSwaggerPage({
         description: 'Tag description'
     }],
     host: 'google.com', // The host (name or ip) serving the API. This MUST be the host only and does not include the scheme nor sub-paths.
-    schemes: [], // The transfer protocol of the API. Values MUST be from the list: "http", "https", "ws", "wss". (default: [])
+    schemes: [], // The transfer protocol of the API. Values MUST be from the list: 'http', 'https', 'ws', 'wss'. (default: [])
     apis: [ `${__dirname}/controllers/*.js` ], // Path to the API docs (default: [])
     definitions: {myObject: require('api/myObject.json')}, // External definitions to add to swagger (default: [])
     routePrefix: 'prefix', // Prefix to add for all routes (default: '')
     forceSecure: false, // Force swagger-ui to use https protocol to load JSON file (default: false)
-    validatorUrl: 'http://example.com' // Validate specs against given validator, set to null to disable validation (default: 'https://online.swagger.io/validator')
+    validatorUrl: 'http://example.com', // Validate specs against given validator, set to null to disable validation (default: 'https://online.swagger.io/validator')
+    supportedSubmitMethods: ['get', 'post'] // List of HTTP methods that have the Try it out feature enabled. An empty array disables Try it out for all operations. (default: ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'])
 });
 ```
 

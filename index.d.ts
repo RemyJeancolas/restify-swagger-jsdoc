@@ -14,9 +14,11 @@ export interface SwaggerPageOptions {
     routePrefix?: string;
     forceSecure?: boolean;
     validatorUrl?: string;
+    supportedSubmitMethods?: SwaggerSupportedHttpMethods[];
 }
 
 export type SwaggerScheme = 'http' | 'https' | 'ws' | 'wss';
+export type SwaggerSupportedHttpMethods = 'get' | 'put' | 'post' | 'delete' | 'options' | 'head' | 'patch' | 'trace';
 
 export interface SwaggerTag {
     name: string;
