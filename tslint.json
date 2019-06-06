@@ -1,3 +1,6 @@
+// 20190606121610
+// https://raw.githubusercontent.com/bhvr-business-solutions/air-canada-poc/master/app/server/tslint.json?token=ACPK6S7PLYWYYI2JV5T57TC5AJ3MS
+
 {
   "exclude": "**/node_modules/**/*",
   "rulesDirectory": [
@@ -19,7 +22,7 @@
     ],
     "no-inner-html": true,
     "no-octal-literal": true,
-    "no-reserved-keywords": true,
+    "no-reserved-keywords": false,
     "no-string-based-set-immediate": true,
     "no-string-based-set-interval": true,
     "no-string-based-set-timeout": true,
@@ -78,7 +81,7 @@
       "check-space"
     ],
     "export-name": true,
-    "import-name": true,
+    "import-name": false,
     "interface-name": [
       true,
       "never-prefix"

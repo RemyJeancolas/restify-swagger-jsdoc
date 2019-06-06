@@ -39,6 +39,10 @@ function addSwaggerUiConfig(content: string, variableName: string, value: any): 
   );
 }
 
+function trimTrailingSlash(data: string): string {
+  return data.replace(/\/+$/, '');
+}
+
 export function createSwaggerPage(options: SwaggerPageOptions): void {
   if (!options.title) {
     throw new Error('options.title is required');
@@ -59,7 +63,7 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
         version: options.version,
         description: typeof options.description === 'string' ? options.description : undefined
       },
-      host: typeof options.host === 'string' ? options.host.replace(/\/+$/, '') : undefined,
+      host: typeof options.host === 'string' ? trimTrailingSlash(options.host) : undefined,
       basePath: typeof options.routePrefix === 'string' ? `/${options.routePrefix.replace(/^\/+/, '')}` : '/',
       schemes: Array.isArray(options.schemes) ? options.schemes : undefined,
       tags: Array.isArray(options.tags) ? options.tags : []
@@ -82,7 +86,7 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
     delete swaggerSpec.securityDefinitions;
   }
 
-  const publicPath = options.path.replace(/\/+$/, '');
+  const publicPath = trimTrailingSlash(options.path);
 
   options.server.get(`${publicPath}/swagger.json`, (req, res, next) => {
     res.setHeader('Content-type', 'application/json');
@@ -124,15 +128,15 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
 
       const contentType = mime.lookup(file);
       if (contentType !== false) {
-          res.setHeader('Content-Type', contentType);
-        }
+        res.setHeader('Content-Type', contentType);
+      }
 
       res.write(content);
       res.end();
       return next();
-      });
     });
-  }
+  });
+}
 
   // tslint:disable-next-line:export-name
-export default {createSwaggerPage}; // tslint:disable-line:no-default-export
+export default { createSwaggerPage }; // tslint:disable-line:no-default-export

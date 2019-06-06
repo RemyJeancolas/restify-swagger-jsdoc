@@ -1,7 +1,9 @@
 src
 tests
 tsconfig.json
+tsconfig-build.json
 tslint.json
 .gitignore
 .travis.yml
 .nvmrc
+.nyc_output

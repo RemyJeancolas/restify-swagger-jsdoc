@@ -9,6 +9,9 @@ function addSwaggerUiConfig(content, variableName, value) {
     const line = 'layout: "StandaloneLayout"';
     return content.replace(line, `${line},\n${' '.repeat(8)}${variableName}: ${JSON.stringify(value)}`);
 }
+function trimTrailingSlash(data) {
+    return data.replace(/\/+$/, '');
+}
 function createSwaggerPage(options) {
     if (!options.title) {
         throw new Error('options.title is required');
@@ -30,7 +33,7 @@ function createSwaggerPage(options) {
                 version: options.version,
                 description: typeof options.description === 'string' ? options.description : undefined
             },
-            host: typeof options.host === 'string' ? options.host.replace(/\/+$/, '') : undefined,
+            host: typeof options.host === 'string' ? trimTrailingSlash(options.host) : undefined,
             basePath: typeof options.routePrefix === 'string' ? `/${options.routePrefix.replace(/^\/+/, '')}` : '/',
             schemes: Array.isArray(options.schemes) ? options.schemes : undefined,
             tags: Array.isArray(options.tags) ? options.tags : []
@@ -50,7 +53,7 @@ function createSwaggerPage(options) {
     else {
         delete swaggerSpec.securityDefinitions;
     }
-    const publicPath = options.path.replace(/\/+$/, '');
+    const publicPath = trimTrailingSlash(options.path);
     options.server.get(`${publicPath}/swagger.json`, (req, res, next) => {
         res.setHeader('Content-type', 'application/json');
         res.send(swaggerSpec);
