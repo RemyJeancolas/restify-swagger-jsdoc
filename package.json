@@ -77,7 +77,7 @@
     "typescript": "^3.1.4"
   },
   "peerDependencies": {
-    "restify": "^7"
+    "restify": ">=7"
   },
   "typings": "index.d.ts",
   "nyc": {
