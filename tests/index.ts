@@ -286,10 +286,8 @@ describe('restify-swagger-jsdoc', () => {
 
       expect(sendStub.callCount).to.equal(1);
       expect(sendStub.lastCall.args[0]).to.deep.equal({
-        info: { title: options.title, version: options.version, description: undefined },
-        host: undefined,
+        info: { title: options.title, version: options.version },
         basePath: '/',
-        schemes: undefined,
         tags: [],
         swagger: '2.0',
         paths: {},
