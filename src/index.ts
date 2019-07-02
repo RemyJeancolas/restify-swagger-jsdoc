@@ -39,8 +39,12 @@ function addSwaggerUiConfig(content: string, variableName: string, value: any): 
   );
 }
 
-function trimTrailingSlash(data: string): string {
-  return data.replace(/\/+$/, '');
+function trimTrailingChar(data: string, char: string = '/'): string {
+  return data.replace(new RegExp(`${char}+$`), '');
+}
+
+function fileNotFound(file: string, next: restify.Next): void {
+  return next(new errors.NotFoundError(`File ${file} does not exist`));
 }
 
 export function createSwaggerPage(options: SwaggerPageOptions): void {
@@ -54,7 +58,7 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
     throw new Error('options.path is required');
   }
 
-  const swaggerUiPath = path.dirname(require.resolve('swagger-ui-dist'));
+  const swaggerUiPath = `${trimTrailingChar(path.dirname(require.resolve('swagger-ui-dist')), path.sep)}${path.sep}`;
 
   const swaggerSpec = swaggerJSDoc({
     swaggerDefinition: {
@@ -63,7 +67,7 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
         version: options.version,
         description: typeof options.description === 'string' ? options.description : undefined
       },
-      host: typeof options.host === 'string' ? trimTrailingSlash(options.host) : undefined,
+      host: typeof options.host === 'string' ? trimTrailingChar(options.host) : undefined,
       basePath: typeof options.routePrefix === 'string' ? `/${options.routePrefix.replace(/^\/+/, '')}` : '/',
       schemes: Array.isArray(options.schemes) ? options.schemes : undefined,
       tags: Array.isArray(options.tags) ? options.tags : []
@@ -86,7 +90,7 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
     delete swaggerSpec.securityDefinitions;
   }
 
-  const publicPath = trimTrailingSlash(options.path);
+  const publicPath = trimTrailingChar(options.path);
 
   options.server.get(`${publicPath}/swagger.json`, (req, res, next) => {
     res.setHeader('Content-type', 'application/json');
@@ -102,9 +106,14 @@ export function createSwaggerPage(options: SwaggerPageOptions): void {
 
   options.server.get(`${publicPath}/*`, (req, res, next) => {
     const file = req.params['*'];
-    fs.readFile(path.resolve(swaggerUiPath, file), (err, content) => {
+    const filePath = path.resolve(swaggerUiPath, file);
+    if (filePath.indexOf(swaggerUiPath) !== 0) {
+      return fileNotFound(file, next);
+    }
+
+    fs.readFile(filePath, (err, content) => {
       if (err) {
-        return next(new errors.NotFoundError(`File ${file} does not exist`));
+        return fileNotFound(file, next);
       }
 
       if (file === 'index.html') {

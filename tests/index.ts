@@ -5,15 +5,12 @@ import * as fs from 'fs';
 import * as mime from 'mime-types';
 import * as swaggerDoc from '../src/index';
 
-let sandbox: sinon.SinonSandbox;
-const server: any = {get: Function};
-const options: any = {title: 'foo', version: '1.0.0', server, path: '/swagger'};
-const res: any = {setHeader: Function, send: Function, write: Function, end: Function};
-
 describe('restify-swagger-jsdoc', () => {
-  before(() => {
-    sandbox = sinon.sandbox.create();
-  });
+  const swaggerUiPath = `${path.dirname(require.resolve('swagger-ui-dist'))}${path.sep}`;
+  const sandbox = sinon.createSandbox();
+  const server: any = {get: Function};
+  const options: any = {title: 'foo', version: '1.0.0', server, path: '/swagger'};
+  const res: any = {setHeader: Function, send: Function, write: Function, end: Function};
 
   afterEach(() => {
     sandbox.restore();
@@ -72,29 +69,51 @@ describe('restify-swagger-jsdoc', () => {
     describe('Swagger UI files endpoint', () => {
       it('should throw a 404 error if the requested file doesn\'t exist', () => {
         const serverGetStub = sandbox.stub(server, 'get');
-        const dirnameStub = sandbox.stub(path, 'dirname').returns('baz');
+        const dirnameStub = sandbox.stub(path, 'dirname').returns(swaggerUiPath);
         swaggerDoc.createSwaggerPage(options);
 
         expect(dirnameStub.callCount).to.equal(1);
         expect(serverGetStub.callCount).to.equal(3);
         const callback: Function = serverGetStub.thirdCall.args[1];
         const next = sandbox.spy();
-        const resolveStub = sandbox.stub(path, 'resolve').returns('foo');
+        const resolveStub = sandbox.stub(path, 'resolve').returns(path.join(swaggerUiPath, 'bar'));
         const readFileStub = sandbox.stub(fs, 'readFile').callsFake((p: string, cb: (err: Error, content?: string) => void) => {
           cb(new Error('Foo'));
         });
         callback({params: {'*': 'bar'}}, null, next);
 
         expect(resolveStub.callCount).to.equal(1);
-        expect(resolveStub.lastCall.args).to.deep.equal(['baz', 'bar']);
+        expect(resolveStub.lastCall.args).to.deep.equal([swaggerUiPath, 'bar']);
         expect(readFileStub.callCount).to.equal(1);
         expect(next.callCount).to.equal(1);
         expect(next.lastCall.args[0].message).to.equal('File bar does not exist');
       });
 
+      it('should throw a 404 error if the requested file is outside the swagger ui directory', () => {
+        const serverGetStub = sandbox.stub(server, 'get');
+        const dirnameStub = sandbox.stub(path, 'dirname').returns(swaggerUiPath);
+        swaggerDoc.createSwaggerPage(options);
+
+        expect(dirnameStub.callCount).to.equal(1);
+        expect(serverGetStub.callCount).to.equal(3);
+        const callback: Function = serverGetStub.thirdCall.args[1];
+        const next = sandbox.spy();
+        const resolveSpy = sandbox.spy(path, 'resolve');
+        const readFileStub = sandbox.stub(fs, 'readFile').callsFake((p: string, cb: (err: Error, content?: string) => void) => {
+          cb(new Error('Foo'));
+        });
+        callback({params: {'*': '../foo'}}, null, next);
+
+        expect(resolveSpy.callCount).to.equal(1);
+        expect(resolveSpy.lastCall.args).to.deep.equal([swaggerUiPath, '../foo']);
+        expect(readFileStub.callCount).to.equal(0);
+        expect(next.callCount).to.equal(1);
+        expect(next.lastCall.args[0].message).to.equal('File ../foo does not exist');
+      });
+
       it('should send a file if existing', () => {
         const getStub = sandbox.stub(server, 'get');
-        const dirnameStub = sandbox.stub(path, 'dirname').returns('baz');
+        const dirnameStub = sandbox.stub(path, 'dirname').returns(swaggerUiPath);
         swaggerDoc.createSwaggerPage(options);
 
         expect(dirnameStub.callCount).to.equal(1);
@@ -104,7 +123,7 @@ describe('restify-swagger-jsdoc', () => {
         const lookupStub = sandbox.stub(mime, 'lookup').returns(false);
         const writeStub = sandbox.stub(res, 'write');
         const endStub = sandbox.stub(res, 'end');
-        sandbox.stub(path, 'resolve').returns('foo');
+        sandbox.stub(path, 'resolve').returns(path.join(swaggerUiPath, 'bar'));
         sandbox.stub(fs, 'readFile').callsFake((filePath: string, cb: (err: Error, content?: string) => void) => {
           cb(null, 'Foo');
         });
@@ -120,7 +139,7 @@ describe('restify-swagger-jsdoc', () => {
 
       it('should send the correct content type if found', () => {
         const getStub = sandbox.stub(server, 'get');
-        const dirnameStub = sandbox.stub(path, 'dirname').returns('baz');
+        const dirnameStub = sandbox.stub(path, 'dirname').returns(swaggerUiPath);
         swaggerDoc.createSwaggerPage(options);
 
         expect(dirnameStub.callCount).to.equal(1);
@@ -131,7 +150,7 @@ describe('restify-swagger-jsdoc', () => {
         const setHeaderStub = sandbox.stub(res, 'setHeader');
         const writeStub = sandbox.stub(res, 'write');
         const endStub = sandbox.stub(res, 'end');
-        sandbox.stub(path, 'resolve').returns('foo');
+        sandbox.stub(path, 'resolve').returns(path.join(swaggerUiPath, 'bar'));
         sandbox.stub(fs, 'readFile').callsFake((filePath: string, cb: (err: Error, content?: string) => void) => {
           cb(null, 'Foo');
         });
@@ -149,7 +168,7 @@ describe('restify-swagger-jsdoc', () => {
 
       it('should overwrite Swagger UI index page with its own json file', () => {
         const getStub = sandbox.stub(server, 'get');
-        const dirnameStub = sandbox.stub(path, 'dirname').returns('baz');
+        const dirnameStub = sandbox.stub(path, 'dirname').returns(swaggerUiPath);
         swaggerDoc.createSwaggerPage(options);
 
         expect(dirnameStub.callCount).to.equal(1);
@@ -160,7 +179,7 @@ describe('restify-swagger-jsdoc', () => {
         const setHeaderStub = sandbox.stub(res, 'setHeader');
         const writeStub = sandbox.stub(res, 'write');
         const endStub = sandbox.stub(res, 'end');
-        sandbox.stub(path, 'resolve').returns('foo');
+        sandbox.stub(path, 'resolve').returns(path.join(swaggerUiPath, 'bar'));
         sandbox.stub(fs, 'readFile').callsFake((filePath: string, cb: (err: Error, content?: string) => void) => {
           cb(null, 'url: "https://petstore.swagger.io/v2/swagger.json"');
         });
@@ -179,7 +198,7 @@ describe('restify-swagger-jsdoc', () => {
       it('should overwrite validatorUrl if provided', () => {
         const localOptions = {...options, validatorUrl: null};
         const getStub = sandbox.stub(server, 'get');
-        const dirnameStub = sandbox.stub(path, 'dirname').returns('baz');
+        const dirnameStub = sandbox.stub(path, 'dirname').returns(swaggerUiPath);
         swaggerDoc.createSwaggerPage(localOptions);
 
         expect(dirnameStub.callCount).to.equal(1);
@@ -190,7 +209,7 @@ describe('restify-swagger-jsdoc', () => {
         const setHeaderStub = sandbox.stub(res, 'setHeader');
         const writeStub = sandbox.stub(res, 'write');
         const endStub = sandbox.stub(res, 'end');
-        sandbox.stub(path, 'resolve').returns('foo');
+        sandbox.stub(path, 'resolve').returns(path.join(swaggerUiPath, 'bar'));
         sandbox.stub(fs, 'readFile').callsFake((filePath: string, cb: (err: Error, content?: string) => void) => {
           cb(null, 'layout: "StandaloneLayout"');
         });
@@ -215,7 +234,7 @@ describe('restify-swagger-jsdoc', () => {
       it('should handle supportedSubmitMethods if provided', () => {
         const localOptions = {...options, supportedSubmitMethods: []};
         const getStub = sandbox.stub(server, 'get');
-        const dirnameStub = sandbox.stub(path, 'dirname').returns('baz');
+        const dirnameStub = sandbox.stub(path, 'dirname').returns(swaggerUiPath);
         swaggerDoc.createSwaggerPage(localOptions);
 
         expect(dirnameStub.callCount).to.equal(1);
@@ -226,7 +245,7 @@ describe('restify-swagger-jsdoc', () => {
         const setHeaderStub = sandbox.stub(res, 'setHeader');
         const writeStub = sandbox.stub(res, 'write');
         const endStub = sandbox.stub(res, 'end');
-        sandbox.stub(path, 'resolve').returns('foo');
+        sandbox.stub(path, 'resolve').returns(path.join(swaggerUiPath, 'bar'));
         sandbox.stub(fs, 'readFile').callsFake((filePath: string, cb: (err: Error, content?: string) => void) => {
           cb(null, 'layout: "StandaloneLayout"');
         });
@@ -245,7 +264,7 @@ describe('restify-swagger-jsdoc', () => {
 
       it('should send json file over https if options.forceSecure or req.isSecure() === true', () => {
         const getStub = sandbox.stub(server, 'get');
-        const dirnameStub = sandbox.stub(path, 'dirname').returns('baz');
+        const dirnameStub = sandbox.stub(path, 'dirname').returns(swaggerUiPath);
         swaggerDoc.createSwaggerPage(options);
 
         expect(dirnameStub.callCount).to.equal(1);
@@ -256,7 +275,7 @@ describe('restify-swagger-jsdoc', () => {
         const setHeaderStub = sandbox.stub(res, 'setHeader');
         const writeStub = sandbox.stub(res, 'write');
         const endStub = sandbox.stub(res, 'end');
-        sandbox.stub(path, 'resolve').returns('foo');
+        sandbox.stub(path, 'resolve').returns(path.join(swaggerUiPath, 'bar'));
         sandbox.stub(fs, 'readFile').callsFake((filePath: string, cb: (err: Error, content?: string) => void) => {
           cb(null, 'url: "https://petstore.swagger.io/v2/swagger.json"');
         });

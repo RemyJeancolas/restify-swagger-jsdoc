@@ -9,8 +9,11 @@ function addSwaggerUiConfig(content, variableName, value) {
     const line = 'layout: "StandaloneLayout"';
     return content.replace(line, `${line},\n${' '.repeat(8)}${variableName}: ${JSON.stringify(value)}`);
 }
-function trimTrailingSlash(data) {
-    return data.replace(/\/+$/, '');
+function trimTrailingChar(data, char = '/') {
+    return data.replace(new RegExp(`${char}+$`), '');
+}
+function fileNotFound(file, next) {
+    return next(new errors.NotFoundError(`File ${file} does not exist`));
 }
 function createSwaggerPage(options) {
     if (!options.title) {
@@ -25,7 +28,7 @@ function createSwaggerPage(options) {
     else if (!options.path) {
         throw new Error('options.path is required');
     }
-    const swaggerUiPath = path.dirname(require.resolve('swagger-ui-dist'));
+    const swaggerUiPath = `${trimTrailingChar(path.dirname(require.resolve('swagger-ui-dist')), path.sep)}${path.sep}`;
     const swaggerSpec = swaggerJSDoc({
         swaggerDefinition: {
             info: {
@@ -33,7 +36,7 @@ function createSwaggerPage(options) {
                 version: options.version,
                 description: typeof options.description === 'string' ? options.description : undefined
             },
-            host: typeof options.host === 'string' ? trimTrailingSlash(options.host) : undefined,
+            host: typeof options.host === 'string' ? trimTrailingChar(options.host) : undefined,
             basePath: typeof options.routePrefix === 'string' ? `/${options.routePrefix.replace(/^\/+/, '')}` : '/',
             schemes: Array.isArray(options.schemes) ? options.schemes : undefined,
             tags: Array.isArray(options.tags) ? options.tags : []
@@ -53,7 +56,7 @@ function createSwaggerPage(options) {
     else {
         delete swaggerSpec.securityDefinitions;
     }
-    const publicPath = trimTrailingSlash(options.path);
+    const publicPath = trimTrailingChar(options.path);
     options.server.get(`${publicPath}/swagger.json`, (req, res, next) => {
         res.setHeader('Content-type', 'application/json');
         res.send(swaggerSpec);
@@ -66,9 +69,13 @@ function createSwaggerPage(options) {
     });
     options.server.get(`${publicPath}/*`, (req, res, next) => {
         const file = req.params['*'];
-        fs.readFile(path.resolve(swaggerUiPath, file), (err, content) => {
+        const filePath = path.resolve(swaggerUiPath, file);
+        if (filePath.indexOf(swaggerUiPath) !== 0) {
+            return fileNotFound(file, next);
+        }
+        fs.readFile(filePath, (err, content) => {
             if (err) {
-                return next(new errors.NotFoundError(`File ${file} does not exist`));
+                return fileNotFound(file, next);
             }
             if (file === 'index.html') {
                 const isReqSecure = options.forceSecure || req.isSecure();
