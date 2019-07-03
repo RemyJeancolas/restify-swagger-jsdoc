@@ -15,7 +15,7 @@ function trimTrailingChar(data, char = '/') {
 function fileNotFound(file, next) {
     return next(new errors.NotFoundError(`File ${file} does not exist`));
 }
-function createSwaggerPage(options) {
+function validateOptions(options) {
     if (!options.title) {
         throw new Error('options.title is required');
     }
@@ -28,7 +28,8 @@ function createSwaggerPage(options) {
     else if (!options.path) {
         throw new Error('options.path is required');
     }
-    const swaggerUiPath = `${trimTrailingChar(path.dirname(require.resolve('swagger-ui-dist')), path.sep)}${path.sep}`;
+}
+function createSwaggerSpec(options) {
     const swaggerSpec = swaggerJSDoc({
         swaggerDefinition: {
             info: {
@@ -56,6 +57,22 @@ function createSwaggerPage(options) {
     else {
         delete swaggerSpec.securityDefinitions;
     }
+    return swaggerSpec;
+}
+function loadIndexPage(options, req, publicPath, content) {
+    const isReqSecure = options.forceSecure || req.isSecure();
+    const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
+    let localContent = content.toString().replace('url: "https://petstore.swagger.io/v2/swagger.json"', `url: "${jsonFileUrl}"`);
+    if (options.validatorUrl === null || typeof options.validatorUrl === 'string') {
+        localContent = addSwaggerUiConfig(localContent, 'validatorUrl', options.validatorUrl);
+    }
+    if (Array.isArray(options.supportedSubmitMethods)) {
+        localContent = addSwaggerUiConfig(localContent, 'supportedSubmitMethods', options.supportedSubmitMethods);
+    }
+    return Buffer.from(localContent);
+}
+function createRoutes(options, swaggerSpec) {
+    const swaggerUiPath = `${trimTrailingChar(path.dirname(require.resolve('swagger-ui-dist')), path.sep)}${path.sep}`;
     const publicPath = trimTrailingChar(options.path);
     options.server.get(`${publicPath}/swagger.json`, (req, res, next) => {
         res.setHeader('Content-type', 'application/json');
@@ -78,16 +95,7 @@ function createSwaggerPage(options) {
                 return fileNotFound(file, next);
             }
             if (file === 'index.html') {
-                const isReqSecure = options.forceSecure || req.isSecure();
-                const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
-                let localContent = content.toString().replace('url: "https://petstore.swagger.io/v2/swagger.json"', `url: "${jsonFileUrl}"`);
-                if (options.validatorUrl === null || typeof options.validatorUrl === 'string') {
-                    localContent = addSwaggerUiConfig(localContent, 'validatorUrl', options.validatorUrl);
-                }
-                if (Array.isArray(options.supportedSubmitMethods)) {
-                    localContent = addSwaggerUiConfig(localContent, 'supportedSubmitMethods', options.supportedSubmitMethods);
-                }
-                content = Buffer.from(localContent);
+                content = loadIndexPage(options, req, publicPath, content);
             }
             const contentType = mime.lookup(file);
             if (contentType !== false) {
@@ -98,6 +106,10 @@ function createSwaggerPage(options) {
             return next();
         });
     });
+}
+function createSwaggerPage(options) {
+    validateOptions(options);
+    createRoutes(options, createSwaggerSpec(options));
 }
 exports.createSwaggerPage = createSwaggerPage;
 exports.default = { createSwaggerPage };
