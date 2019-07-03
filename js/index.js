@@ -71,19 +71,27 @@ function loadIndexPage(options, req, publicPath, content) {
     }
     return Buffer.from(localContent);
 }
-function createRoutes(options, swaggerSpec) {
-    const swaggerUiPath = `${trimTrailingChar(path.dirname(require.resolve('swagger-ui-dist')), path.sep)}${path.sep}`;
-    const publicPath = trimTrailingChar(options.path);
-    options.server.get(`${publicPath}/swagger.json`, (req, res, next) => {
+function setContentType(file, res) {
+    const contentType = mime.lookup(file);
+    if (contentType !== false) {
+        res.setHeader('Content-Type', contentType);
+    }
+}
+function createSpecRoute(server, publicPath, swaggerSpec) {
+    server.get(`${publicPath}/swagger.json`, (req, res, next) => {
         res.setHeader('Content-type', 'application/json');
         res.send(swaggerSpec);
         return next();
     });
-    options.server.get(publicPath, (req, res, next) => {
+}
+function createHomeRoute(server, publicPath) {
+    server.get(publicPath, (req, res, next) => {
         res.setHeader('Location', `${publicPath}/index.html`);
         res.send(302);
         return next();
     });
+}
+function createDynamicRoute(options, publicPath, swaggerUiPath) {
     options.server.get(`${publicPath}/*`, (req, res, next) => {
         const file = req.params['*'];
         const filePath = path.resolve(swaggerUiPath, file);
@@ -97,15 +105,19 @@ function createRoutes(options, swaggerSpec) {
             if (file === 'index.html') {
                 content = loadIndexPage(options, req, publicPath, content);
             }
-            const contentType = mime.lookup(file);
-            if (contentType !== false) {
-                res.setHeader('Content-Type', contentType);
-            }
+            setContentType(file, res);
             res.write(content);
             res.end();
             return next();
         });
     });
+}
+function createRoutes(options, swaggerSpec) {
+    const swaggerUiPath = `${trimTrailingChar(path.dirname(require.resolve('swagger-ui-dist')), path.sep)}${path.sep}`;
+    const publicPath = trimTrailingChar(options.path);
+    createSpecRoute(options.server, publicPath, swaggerSpec);
+    createHomeRoute(options.server, publicPath);
+    createDynamicRoute(options, publicPath, swaggerUiPath);
 }
 function createSwaggerPage(options) {
     validateOptions(options);

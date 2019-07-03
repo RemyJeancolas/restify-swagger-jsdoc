@@ -112,22 +112,30 @@ function loadIndexPage(options: SwaggerPageOptions, req: restify.Request, public
   return Buffer.from(localContent);
 }
 
-function createRoutes(options: SwaggerPageOptions, swaggerSpec: swaggerJSDoc.options): void {
-  const swaggerUiPath = `${trimTrailingChar(path.dirname(require.resolve('swagger-ui-dist')), path.sep)}${path.sep}`;
-  const publicPath = trimTrailingChar(options.path);
+function setContentType(file: string, res: restify.Response): void {
+  const contentType = mime.lookup(file);
+  if (contentType !== false) {
+    res.setHeader('Content-Type', contentType);
+  }
+}
 
-  options.server.get(`${publicPath}/swagger.json`, (req, res, next) => {
+function createSpecRoute(server: restify.Server, publicPath: string, swaggerSpec: swaggerJSDoc.options): void {
+  server.get(`${publicPath}/swagger.json`, (req, res, next) => {
     res.setHeader('Content-type', 'application/json');
     res.send(swaggerSpec);
     return next();
   });
+}
 
-  options.server.get(publicPath, (req, res, next) => {
+function createHomeRoute(server: restify.Server, publicPath: string): void {
+  server.get(publicPath, (req, res, next) => {
     res.setHeader('Location', `${publicPath}/index.html`);
     res.send(302);
     return next();
   });
+}
 
+function createDynamicRoute(options: SwaggerPageOptions, publicPath: string, swaggerUiPath: string): void {
   options.server.get(`${publicPath}/*`, (req, res, next) => {
     const file = req.params['*'];
     const filePath = path.resolve(swaggerUiPath, file);
@@ -144,16 +152,24 @@ function createRoutes(options: SwaggerPageOptions, swaggerSpec: swaggerJSDoc.opt
         content = loadIndexPage(options, req, publicPath, content);
       }
 
-      const contentType = mime.lookup(file);
-      if (contentType !== false) {
-        res.setHeader('Content-Type', contentType);
-      }
-
+      setContentType(file, res);
       res.write(content);
       res.end();
+
       return next();
     });
   });
+}
+
+function createRoutes(options: SwaggerPageOptions, swaggerSpec: swaggerJSDoc.options): void {
+  const swaggerUiPath = `${trimTrailingChar(path.dirname(require.resolve('swagger-ui-dist')), path.sep)}${path.sep}`;
+  const publicPath = trimTrailingChar(options.path);
+
+  createSpecRoute(options.server, publicPath, swaggerSpec);
+
+  createHomeRoute(options.server, publicPath);
+
+  createDynamicRoute(options, publicPath, swaggerUiPath);
 }
 
 export function createSwaggerPage(options: SwaggerPageOptions): void {
