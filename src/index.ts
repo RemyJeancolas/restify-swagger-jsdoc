@@ -21,6 +21,7 @@ interface SwaggerPageOptions {
   validatorUrl?: string;
   supportedSubmitMethods?: SwaggerSupportedHttpMethods[];
   securityDefinitions?: {[k: string]: any};
+  security?: [any];
 }
 
 type SwaggerScheme = 'http' | 'https' | 'ws' | 'wss';
@@ -85,6 +86,9 @@ function createSwaggerSpec(options: SwaggerPageOptions): swaggerJSDoc.options {
   if (options.securityDefinitions && Object.keys(options.securityDefinitions).length > 0) {
     for (const k of Object.keys(options.securityDefinitions)) {
       swaggerSpec.securityDefinitions[k] = options.securityDefinitions[k];
+    }
+    if (options.security && Object.keys(options.security).length > 0) {
+      swaggerSpec.security = options.security;
     }
   } else {
     delete swaggerSpec.securityDefinitions;
