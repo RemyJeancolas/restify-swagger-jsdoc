@@ -91,7 +91,7 @@ function createSwaggerSpec(options: SwaggerPageOptions): swaggerJSDoc.options {
     for (const k of Object.keys(options.securityDefinitions)) {
       swaggerSpec.securityDefinitions[k] = options.securityDefinitions[k];
     }
-    if (options.security && Object.keys(options.security).length > 0) {
+    if (options.security) {
       swaggerSpec.security = options.security;
     }
   } else {
