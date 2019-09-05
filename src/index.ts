@@ -21,7 +21,7 @@ interface SwaggerPageOptions {
   validatorUrl?: string;
   supportedSubmitMethods?: SwaggerSupportedHttpMethods[];
   securityDefinitions?: {[k: string]: any};
-  security?: [ISecurityType];
+  security?: [SecurityType];
 }
 
 type SwaggerScheme = 'http' | 'https' | 'ws' | 'wss';
@@ -32,7 +32,7 @@ interface SwaggerTag {
   description: string;
 }
 
-interface ISecurityType {
+interface SecurityType {
   [key: string]: [];
 }
 
