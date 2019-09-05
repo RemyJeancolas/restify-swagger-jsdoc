@@ -6,9 +6,13 @@ declare module 'swagger-jsdoc' {
             definitions?: {[key: string]: any};
             paths?: {[key: string]: string};
             securityDefinitions?: {[k: string]: any};
-            security?: [any];
+            security?: [SecurityDefinition];
         }
-
+        
+        interface SecurityDefinition {
+            [key: string]: [];
+        }
+          
         interface optionsDefinition {
             info: optionsDefinitionInfo;
             host?: string;

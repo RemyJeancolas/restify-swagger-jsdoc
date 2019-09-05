@@ -21,13 +21,13 @@ swaggerDoc.createSwaggerPage({
   routePrefix: 'prefix', // prefix to add for all routes (default: '')
   securityDefinitions: {
     basicAuth: {
-      type: 'apiKey',
       in: 'header',
-      name: 'Authorization'
-    }
+      name: 'Authorization',
+      type: 'apiKey',
+    },
   },
   security: [{
-    basicAuth: []
+    basicAuth: [],
   }],
   forceSecure: false // force swagger-ui to use https protocol to load JSON file (default: false)
 });
