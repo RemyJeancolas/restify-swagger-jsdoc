@@ -19,6 +19,16 @@ swaggerDoc.createSwaggerPage({
   apis: [ `${__dirname}/controllers/*.js` ], // Path to the API docs (default: [])
   // definitions: {myObject: require('api/myObject.json')}, // External definitions to add to swagger (default: [])
   routePrefix: 'prefix', // prefix to add for all routes (default: '')
+  securityDefinitions: {
+    basicAuth: {
+      type: 'apiKey',
+      in: 'header',
+      name: 'Authorization'
+    }
+  },
+  security: [{
+    basicAuth: []
+  }],
   forceSecure: false // force swagger-ui to use https protocol to load JSON file (default: false)
 });
 
