@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.createSwaggerPage = void 0;
 const errors = require("restify-errors");
 const swaggerJSDoc = require("swagger-jsdoc");
 const path = require("path");
