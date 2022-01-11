@@ -51,28 +51,28 @@
   },
   "homepage": "https://github.com/RemyJeancolas/restify-swagger-jsdoc#readme",
   "dependencies": {
-    "mime-types": "^2.1.27",
+    "mime-types": "^2.1.34",
     "restify-errors": "^6.1.1",
     "swagger-jsdoc": "^3.7.0",
-    "swagger-ui-dist": "^3.28.0"
+    "swagger-ui-dist": "^3.52.5"
   },
   "devDependencies": {
     "@types/chai": "^3.5.2",
-    "@types/mime-types": "^2.1.0",
+    "@types/mime-types": "^2.1.1",
     "@types/mocha": "^2.2.41",
-    "@types/node": "^7.10.11",
+    "@types/node": "^7.10.14",
     "@types/restify": "^7.2.12",
-    "@types/restify-errors": "^4.3.3",
+    "@types/restify-errors": "^4.3.4",
     "@types/sinon": "^2.2.2",
-    "chai": "^4.2.0",
+    "chai": "^4.3.4",
     "mocha": "^7.2.0",
     "nyc": "^14.1.1",
-    "restify": "^8.5.1",
+    "restify": "^8.6.0",
     "sinon": "^4.3.0",
     "ts-node": "^3.3.0",
     "tslint": "^5.20.1",
     "tslint-microsoft-contrib": "^5.2.1",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.10"
   },
   "peerDependencies": {
     "restify": ">=7"
