@@ -3,7 +3,7 @@ tests
 tsconfig.json
 tsconfig-build.json
 tslint.json
+.github
 .gitignore
-.travis.yml
 .nvmrc
 .nyc_output
