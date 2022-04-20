@@ -1,11 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createSwaggerPage = void 0;
-const errors = require("restify-errors");
-const swaggerJSDoc = require("swagger-jsdoc");
-const path = require("path");
-const fs = require("fs");
-const mime = require("mime-types");
+const fs_1 = __importDefault(require("fs"));
+const mime_types_1 = require("mime-types");
+const path_1 = __importDefault(require("path"));
+const restify_errors_1 = require("restify-errors");
+const swagger_jsdoc_1 = __importDefault(require("swagger-jsdoc"));
 function addSwaggerUiConfig(content, variableName, value) {
     const line = 'layout: "StandaloneLayout"';
     return content.replace(line, `${line},\n${' '.repeat(8)}${variableName}: ${JSON.stringify(value)}`);
@@ -14,7 +17,7 @@ function trimTrailingChar(data, char = '/') {
     return data.replace(new RegExp(`${char}+$`), '');
 }
 function fileNotFound(file, next) {
-    return next(new errors.NotFoundError(`File ${file} does not exist`));
+    return next(new restify_errors_1.NotFoundError(`File ${file} does not exist`));
 }
 function validateOptions(options) {
     if (!options.title) {
@@ -31,7 +34,7 @@ function validateOptions(options) {
     }
 }
 function createSwaggerSpec(options) {
-    const swaggerSpec = swaggerJSDoc({
+    const swaggerSpec = swagger_jsdoc_1.default({
         swaggerDefinition: {
             info: {
                 title: options.title,
@@ -73,7 +76,7 @@ function loadIndexPage(options, req, publicPath, content) {
     return Buffer.from(localContent);
 }
 function setContentType(file, res) {
-    const contentType = mime.lookup(file);
+    const contentType = mime_types_1.lookup(file);
     if (contentType !== false) {
         res.setHeader('Content-Type', contentType);
     }
@@ -95,11 +98,11 @@ function createHomeRoute(server, publicPath) {
 function createDynamicRoute(options, publicPath, swaggerUiPath) {
     options.server.get(`${publicPath}/*`, (req, res, next) => {
         const file = req.params['*'];
-        const filePath = path.resolve(swaggerUiPath, file);
+        const filePath = path_1.default.resolve(swaggerUiPath, file);
         if (filePath.indexOf(swaggerUiPath) !== 0) {
             return fileNotFound(file, next);
         }
-        fs.readFile(filePath, (err, content) => {
+        fs_1.default.readFile(filePath, (err, content) => {
             if (err) {
                 return fileNotFound(file, next);
             }
@@ -114,7 +117,7 @@ function createDynamicRoute(options, publicPath, swaggerUiPath) {
     });
 }
 function createRoutes(options, swaggerSpec) {
-    const swaggerUiPath = `${trimTrailingChar(path.dirname(require.resolve('swagger-ui-dist')), path.sep)}${path.sep}`;
+    const swaggerUiPath = `${trimTrailingChar(path_1.default.dirname(require.resolve('swagger-ui-dist')), path_1.default.sep)}${path_1.default.sep}`;
     const publicPath = trimTrailingChar(options.path);
     createSpecRoute(options.server, publicPath, swaggerSpec);
     createHomeRoute(options.server, publicPath);

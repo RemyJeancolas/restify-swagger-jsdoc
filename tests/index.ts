@@ -1,9 +1,9 @@
 import { expect } from 'chai';
-import * as sinon from 'sinon';
-import * as path from 'path';
-import * as fs from 'fs';
-import * as mime from 'mime-types';
-import * as swaggerDoc from '../src/index';
+import fs from 'fs';
+import mime from 'mime-types';
+import path from 'path';
+import sinon from 'sinon';
+import swaggerDoc from '../src/index';
 
 describe('restify-swagger-jsdoc', () => {
   const swaggerUiPath = `${path.dirname(require.resolve('swagger-ui-dist'))}${path.sep}`;
