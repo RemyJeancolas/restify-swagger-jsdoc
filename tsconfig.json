@@ -10,7 +10,9 @@
     "forceConsistentCasingInFileNames": true,
     "alwaysStrict": true,
     "allowUnusedLabels": false,
-    "allowUnreachableCode": false
+    "allowUnreachableCode": false,
+    "noUnusedLocals": true,
+    "esModuleInterop": true
   },
   "exclude": [
     "node_modules"

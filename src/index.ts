@@ -1,14 +1,14 @@
-import * as restify from 'restify';
-import * as errors from 'restify-errors';
-import * as swaggerJSDoc from 'swagger-jsdoc';
-import * as path from 'path';
-import * as fs from 'fs';
-import * as mime from 'mime-types';
+import fs from 'fs';
+import { lookup } from 'mime-types';
+import path from 'path';
+import { Next, Request, Response, Server } from 'restify';
+import { NotFoundError } from 'restify-errors';
+import swaggerJSDoc from 'swagger-jsdoc';
 
 interface SwaggerPageOptions {
   title: string;
   version: string;
-  server: restify.Server;
+  server: Server;
   path: string;
   description?: string;
   tags?: SwaggerTag[];
@@ -43,8 +43,8 @@ function trimTrailingChar(data: string, char: string = '/'): string {
   return data.replace(new RegExp(`${char}+$`), '');
 }
 
-function fileNotFound(file: string, next: restify.Next): void {
-  return next(new errors.NotFoundError(`File ${file} does not exist`));
+function fileNotFound(file: string, next: Next): void {
+  return next(new NotFoundError(`File ${file} does not exist`));
 }
 
 function validateOptions(options: SwaggerPageOptions): void {
@@ -93,7 +93,7 @@ function createSwaggerSpec(options: SwaggerPageOptions): swaggerJSDoc.options {
   return swaggerSpec;
 }
 
-function loadIndexPage(options: SwaggerPageOptions, req: restify.Request, publicPath: string, content: Buffer): Buffer {
+function loadIndexPage(options: SwaggerPageOptions, req: Request, publicPath: string, content: Buffer): Buffer {
   const isReqSecure = options.forceSecure || req.isSecure();
   const jsonFileUrl = `${isReqSecure ? 'https' : 'http'}://${req.headers.host}${publicPath}/swagger.json`;
   let localContent = content.toString().replace(
@@ -112,14 +112,14 @@ function loadIndexPage(options: SwaggerPageOptions, req: restify.Request, public
   return Buffer.from(localContent);
 }
 
-function setContentType(file: string, res: restify.Response): void {
-  const contentType = mime.lookup(file);
+function setContentType(file: string, res: Response): void {
+  const contentType = lookup(file);
   if (contentType !== false) {
     res.setHeader('Content-Type', contentType);
   }
 }
 
-function createSpecRoute(server: restify.Server, publicPath: string, swaggerSpec: swaggerJSDoc.options): void {
+function createSpecRoute(server: Server, publicPath: string, swaggerSpec: swaggerJSDoc.options): void {
   server.get(`${publicPath}/swagger.json`, (req, res, next) => {
     res.setHeader('Content-type', 'application/json');
     res.send(swaggerSpec);
@@ -127,7 +127,7 @@ function createSpecRoute(server: restify.Server, publicPath: string, swaggerSpec
   });
 }
 
-function createHomeRoute(server: restify.Server, publicPath: string): void {
+function createHomeRoute(server: Server, publicPath: string): void {
   server.get(publicPath, (req, res, next) => {
     res.setHeader('Location', `${publicPath}/index.html`);
     res.send(302);

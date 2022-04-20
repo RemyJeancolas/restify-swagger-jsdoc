@@ -1,6 +1,6 @@
-import { createServer } from 'restify';
 import { expect } from 'chai';
-import * as swaggerDoc from '../src/index';
+import { createServer } from 'restify';
+import swaggerDoc from '../src/index';
 
 const server = createServer();
 
