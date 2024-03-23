@@ -148,7 +148,7 @@ function createDynamicRoute(options: SwaggerPageOptions, publicPath: string, swa
         return fileNotFound(file, next);
       }
 
-      if (file === 'index.html') {
+      if (file === 'swagger-initializer.js') {
         content = loadIndexPage(options, req, publicPath, content);
       }
 
